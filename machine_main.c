@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "machine_types.h"
 #include "instruction.h"
 #include "bof.h"
@@ -14,6 +15,7 @@ static union mem_u {
     bin_instr_t instrs[MEMORY_SIZE_IN_WORDS];
 } memory; //https://webcourses.ucf.edu/courses/1443631/discussion_topics/7460061
 
-int main(){
-
+int main(int argc , char **argv){
+    if(strcmp(argv[1],"-p") == 0)
+        printf("true");
 }
