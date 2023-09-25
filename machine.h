@@ -1,34 +1,22 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "machine_types.h"
-#include "instruction.h"
-// a size for the memory (2^16 bytes = 64K)
-#define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
-#define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
+//
 
-static union mem_u {
-    byte_type bytes[MEMORY_SIZE_IN_BYTES];
-    word_type words[MEMORY_SIZE_IN_WORDS];
-    bin_instr_t instrs[MEMORY_SIZE_IN_WORDS];
-} memory; //https://webcourses.ucf.edu/courses/1443631/discussion_topics/7460061
+#ifndef HW1_TESTS_MACHINE_H
+#define HW1_TESTS_MACHINE_H
 
-int main(){
-
-}
-
+#endif //HW1_TESTS_MACHINE_H
 
 //region REGISTER FORMAT INSTRUCTION:
 
     //name| op| rs rt rd | shift | func | (Explanation)
     //ADD   0   s t d       -       33    Add: GPR[d] ← GPR[s] + GPR[t]
-        void ADD(int s, int t, int d);
+    void ADD(int s, int t, int d);
     //SUB 0 s t d - 35 Subtract: GPR[d] ← GPR[s] − GPR[t]
-        void SUB(int s, int t, int d);
+    void SUB(int s, int t, int d);
     //MUL 0 s t - - 25 (HI, LO) ← GPR[s] × GPR[t] Multiply: Multiply GPR[s] and GPR[t], putting the least significant bits in LO //and the most significant bits in HI.
-        void MUL(int s, int t);
+    void MUL(int s, int t);
 
     //DIV 0 s t - - 27 Divide (remainder in HI, quotient in LO): //HI ← GPR[s] % GPR[t] //LO ← GPR[s]/GPR[t])
-        void DIV(int s, int t);
+    void DIV(int s, int t);
     //MFHI 0 - - d - 16 Move from HI: GPR[d] ← HI
     //        MFLO 0 - - d - 18 Move from LO: GPR[d] ← LO
     //        AND 0 s t d - 36 Bitwise And: GPR[d] ← GPR[s] ∧ GPR[t]
@@ -71,8 +59,8 @@ int main(){
     //JMP 2 a Jump: PC ← formAddress(P C, a)
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
 
-//endregion
-//region System Calls
+    //endregion
+    //region System Calls
 
     //code name arg. reg. Effect (in terms of C std. library)
 
