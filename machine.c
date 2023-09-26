@@ -1,4 +1,24 @@
 #include "machine.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "regname.h"
+#include "utilities.h"
+
+extern int REGISTERS[NUM_REGISTERS];
+
+void setRegister(char *name, int data){
+    int ptr = 0;
+    while(ptr < NUM_REGISTERS){
+        if(strcmp(name, regname_get(ptr)) == 0){
+            REGISTERS[ptr] = data;
+            return;
+        }
+        ptr++;
+    }
+    bail_with_error("register does not exist");
+}
+
 //region REGISTER FORMAT INSTRUCTION:
 
     //name| op| rs rt rd | shift | func | (Explanation)

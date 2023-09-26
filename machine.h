@@ -1,22 +1,28 @@
-//
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include "regname.h"
 
 #ifndef HW1_TESTS_MACHINE_H
 #define HW1_TESTS_MACHINE_H
 
 #endif //HW1_TESTS_MACHINE_H
 
+extern void setRegister(char *name, int data);
+
+
 //region REGISTER FORMAT INSTRUCTION:
 
     //name| op| rs rt rd | shift | func | (Explanation)
     //ADD   0   s t d       -       33    Add: GPR[d] ← GPR[s] + GPR[t]
-    void ADD(int s, int t, int d);
+extern void ADD(int s, int t, int d);
     //SUB 0 s t d - 35 Subtract: GPR[d] ← GPR[s] − GPR[t]
-    void SUB(int s, int t, int d);
+extern void SUB(int s, int t, int d);
     //MUL 0 s t - - 25 (HI, LO) ← GPR[s] × GPR[t] Multiply: Multiply GPR[s] and GPR[t], putting the least significant bits in LO //and the most significant bits in HI.
-    void MUL(int s, int t);
+extern void MUL(int s, int t);
 
     //DIV 0 s t - - 27 Divide (remainder in HI, quotient in LO): //HI ← GPR[s] % GPR[t] //LO ← GPR[s]/GPR[t])
-    void DIV(int s, int t);
+extern void DIV(int s, int t);
     //MFHI 0 - - d - 16 Move from HI: GPR[d] ← HI
     //        MFLO 0 - - d - 18 Move from LO: GPR[d] ← LO
     //        AND 0 s t d - 36 Bitwise And: GPR[d] ← GPR[s] ∧ GPR[t]
