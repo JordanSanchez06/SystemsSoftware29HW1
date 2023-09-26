@@ -16,6 +16,16 @@ static union mem_u {
 } memory; //https://webcourses.ucf.edu/courses/1443631/discussion_topics/7460061
 
 int main(int argc , char **argv){
-    if(strcmp(argv[1],"-p") == 0)
-        printf("true");
+    if(strcmp(argv[1],"-p") == 0) {
+
+        BOFFILE bf = bof_read_open(argv[2]);
+
+        BOFHeader bh = bof_read_header(bf);
+
+        printf("%s\n", instruction_assembly_form(instruction_read(bf)));
+        printf("%s\n", instruction_assembly_form(instruction_read(bf)));
+        printf("%s\n", instruction_assembly_form(instruction_read(bf)));
+
+        bof_close(bf);
+    }
 }
