@@ -19,7 +19,7 @@ static union mem_u {
 int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
 
-void printTrace(int pc, BOFFILE bf, BOFHeader bh,  bin_instr_t instruction, int words[]);
+void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
@@ -50,6 +50,8 @@ int main(int argc , char **argv){
         return 0;
     }
 
+    int isTracing = 1;
+
     BOFFILE bf = bof_read_open(argv[1]);
     BOFHeader bh = bof_read_header(bf);
 
@@ -74,12 +76,30 @@ int main(int argc , char **argv){
 
     //fetch execute cycle loop
     for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
-        //fetch
-
-        //execute
+        //fetch and execute
+        int curInstrType = instruction_type(memory.instrs[i]);
+        printf("%d", curInstrType);
+        switch(curInstrType){
+            case reg_instr_type:
+                printf("register instruction");
+                break;
+            case syscall_instr_type:
+                printf("syscall instruction");
+                break;
+            case immed_instr_type:
+                printf("immediate instructions");
+                break;
+            case jump_instr_type:
+                printf("jump");
+                break;
+            case error_instr_type:
+                printf("error");
+                break;
+        }
 
         //print
-        printTrace(pc, bf, bh, memory.instrs[i], words);
+        if(isTracing)
+            printTrace(pc, bh, memory.instrs[i], words);
     }
 
 
@@ -89,7 +109,7 @@ int main(int argc , char **argv){
     bof_close(bf);
 }
 
- void printTrace(int pc, BOFFILE bf, BOFHeader bh,  bin_instr_t instruction, int words[]){
+ void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]){
      printf("      PC: %d\n", pc);
      printf("GPR[$0 ]: %d   	GPR[$at]: %d   	GPR[$v0]: %d   	GPR[$v1]: %d   	GPR[$a0]: %d   	GPR[$a1]: %d\n", REGISTERS[0], REGISTERS[1], REGISTERS[2], REGISTERS[3], REGISTERS[4], REGISTERS[5]);
      printf("GPR[$a2]: %d   	GPR[$a3]: %d   	GPR[$t0]: %d   	GPR[$t1]: %d   	GPR[$t2]: %d   	GPR[$t3]: %d\n", REGISTERS[6], REGISTERS[7], REGISTERS[8], REGISTERS[9], REGISTERS[10], REGISTERS[11]);
