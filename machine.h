@@ -82,7 +82,7 @@ extern void SW(bin_instr_t intrsuction);
     //Name op addr (Explanation)
 extern void JMP(address_type a, address_type pc);
     //JMP 2 a Jump: PC ← formAddress(PC, a)
-extern void JMP(address_type a, address_type pc);
+extern void JAL(address_type a, address_type pc);
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
 
     //endregion
