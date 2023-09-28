@@ -114,25 +114,25 @@ void BNE(bin_instr_t instruction, address_type pc) {
 void LBU(bin_instr_t instruction) {
     //LBU 36 b t o Load Byte Unsigned:
     //GPR[t] ← zeroExt(memory[GPR[b] + formOffset(o)])
-	REGISTERS[instruction.immed.rt] = machine_types_zeroExt(memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)]);
+	REGISTERS[instruction.immed.rt] = machine_types_zeroExt(memory.bytes[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)]);
 }
 
 void LW(bin_instr_t instruction) {
     //LW 35 b t o Load Word (4 bytes):
     //GPR[t] ← memory[GPR[b] + formOffset(o)]
-	REGISTERS[instruction.immed.rt] = memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)];
+	REGISTERS[instruction.immed.rt] = memory.words[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)];
 }
 
 void SB(bin_instr_t instruction) {
     //SB 40 b t o Store Byte (least significant byte of GPR[t]):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
-	memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
+	memory.bytes[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
 }
 
 void SW(bin_instr_t instruction) {
     //SW 43 b t o Store Word (4 bytes):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
-	memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
+	memory.words[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
 }
 
 //endregion
