@@ -4,6 +4,7 @@
 #include <string.h>
 #include "regname.h"
 #include "utilities.h"
+#include "machine_types.h"
 
 extern int REGISTERS[NUM_REGISTERS];
 
@@ -47,24 +48,68 @@ void setRegister(char *name, int data){
 //region IMMEDIATE FORMAT INSTRUCTION:
 
     //Name op rs rt immed (Explanation)
-    //ADDI 9 s t i Add immediate: GPR[t] ← GPR[s] + sgnExt(i)
-    //ANDI 12 s t i Bitwise And immediate: GPR[t] ← GPR[s] ∧ zeroExt(i)
-    //BORI 13 s t i Bitwise Or immediate: GPR[t] ← GPR[s] ∨ zeroExt(i)
-    //XORI 14 s t i Bitwise Xor immediate: GPR[t] ← GPR[s] xor zeroExt(i)
+void ADDI(bin_instr_t intrsuction) {
+    REGISTERS[instruction.immed.rs] + machine_types_sgnExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
+}
+
+void ANDI(bin_instr_t intrsuction) {
+    REGISTERS[instruction.immed.rs] && machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
+}
+
+void BORI(bin_instr_t intrsuction) {
+    REGISTERS[instruction.immed.rs] || machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
+}
+
+void XORI(bin_instr_t intrsuction) {
+    REGISTERS[instruction.immed.rs] ^ machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
+}
+
+void BEQ(bin_instr_t intrsuction) {
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
+    if(REGISTERS[instruction.immed.rs] == REGISTERS[instruction.immed.rt]) {
+        
+    }
+}
+
+void BGEZ(bin_instr_t intrsuction) {
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
+}
+
+void BGTZ(bin_instr_t intrsuction) {
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
+}
+
+void BLEZ(bin_instr_t intrsuction) {
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
+}
+
+void BLTZ(bin_instr_t intrsuction) {
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
+}
+
+void BNE(bin_instr_t instruction) {
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
+}
+
+void LBU(bin_instr_t intrsuction) {
     //LBU 36 b t o Load Byte Unsigned:
     //GPR[t] ← zeroExt(memory[GPR[b] + formOffset(o)])
+}
+
+void LW(bin_instr_t intrsuction) {
     //LW 35 b t o Load Word (4 bytes):
     //GPR[t] ← memory[GPR[b] + formOffset(o)]
+}
+
+void SB(bin_instr_t intrsuction) {
     //SB 40 b t o Store Byte (least significant byte of GPR[t]):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
+}
+
+void SW(bin_instr_t intrsuction) {
     //SW 43 b t o Store Word (4 bytes):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
+}
 
 //endregion
 //region JUMP TYPE INSTRUCTIONS
