@@ -21,7 +21,7 @@ extern int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
 
 //program counter is needed for some immediate instructions
-extern int pc;
+extern address_type pc;
 
 extern void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
 extern void doRegisterInstruction(bin_instr_t instruction);
