@@ -50,63 +50,63 @@ void setRegister(char *name, int data){
     //Name op rs rt immed (Explanation)
 void ADDI(bin_instr_t instruction) {
     //ADDI 9 s t i Add immediate: GPR[t] ← GPR[s] + sgnExt(i)
-    REGISTERS[instruction.immed.rs] + machine_types_sgnExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
+     REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] + machine_types_sgnExt(instruction.immed.immed);
 }
 
 void ANDI(bin_instr_t instruction) {
     //ANDI 12 s t i Bitwise And immediate: GPR[t] ← GPR[s] ∧ zeroExt(i)
-    REGISTERS[instruction.immed.rs] && machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
+	REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] && machine_types_zeroExt(instruction.immed.immed);
 }
 
 void BORI(bin_instr_t instruction) {
     //BORI 13 s t i Bitwise Or immediate: GPR[t] ← GPR[s] ∨ zeroExt(i)
-    REGISTERS[instruction.immed.rs] || machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
+    REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] || machine_types_zeroExt(instruction.immed.immed)
 }
 
 void XORI(bin_instr_t instruction) {
 	//XORI 14 s t i Bitwise Xor immediate: GPR[t] ← GPR[s] xor zeroExt(i)
-    REGISTERS[instruction.immed.rs] ^ machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
+    REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] ^ machine_types_zeroExt(instruction.immed.immed);
 }
 
 void BEQ(bin_instr_t instruction, address_type pc) {
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
     if(REGISTERS[instruction.immed.rs] == REGISTERS[instruction.immed.rt]) {
-        pc += machine_types_formOffset(instruction.immed.immed);
+        pc = pc + machine_types_formOffset(instruction.immed.immed);
     }
 }
 
 void BGEZ(bin_instr_t instruction, address_type pc) {
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] >= REGISTERS[0]) {
-		pc += machine_types_formOffset(instruction.immed.immed);
+		pc = pc + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
 void BGTZ(bin_instr_t instruction, address_type pc) {
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] > REGISTERS[0]) {
-		pc += machine_types_formOffset(instruction.immed.immed);
+		pc = pc + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
 void BLEZ(bin_instr_t instruction, address_type pc) {
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] <= REGISTERS[0]) {
-		pc += machine_types_formOffset(instruction.immed.immed);
+		pc = pc + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
 void BLTZ(bin_instr_t instruction, address_type pc) {
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] < REGISTERS[0]) {
-		pc += machine_types_formOffset(instruction.immed.immed);
+		pc = pc + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
 void BNE(bin_instr_t instruction, address_type pc) {
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] != REGISTERS[instruction.immed.rt]) {
-		pc += machine_types_formOffset(instruction.immed.immed);
+		pc = pc + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
