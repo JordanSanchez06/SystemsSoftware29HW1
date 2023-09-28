@@ -193,7 +193,7 @@ void doImmediateInstruction(bin_instr_t instruction, address_type pc) {
     }
 }
 
-void doJumpInstruction(address_type i, address_type pc) {
+void doJumpInstruction(bin_instr_t instruction, address_type i, address_type pc) {
 	switch((int) instruction.jump.op) {
         case JMP_O:
 			JMP(i, pc);
