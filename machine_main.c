@@ -1,3 +1,10 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "machine_types.h"
+#include "instruction.h"
+#include "bof.h"
+#include "machine.h"
 #include "machine_main.h;
 
 int main(int argc , char **argv) {
