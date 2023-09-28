@@ -112,6 +112,7 @@ int main(int argc , char **argv) {
      printf("\n");
      printf("     %d: 0	...\n", bh.stack_bottom_addr); //TODO is that zero everytime? What do ... signify?
      printf("==> addr:    %d %s\n", PC, instruction_assembly_form(instruction));
+	 PC += 4;
  }
 
 //figures out what instruction to do
