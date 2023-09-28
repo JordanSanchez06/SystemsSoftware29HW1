@@ -18,8 +18,11 @@ static union mem_u {
 //data for each register //extern so we can use it in machine.c where our ADD, SUB, etc. functions will be.
 int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
+int PC;
+int HI;
+int LO;
 
-void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
+void printTrace(BOFHeader bh,  bin_instr_t instruction, int words[]);
 void doRegisterInstruction(bin_instr_t instruction);
 
 int main(int argc , char **argv){
@@ -56,7 +59,7 @@ int main(int argc , char **argv){
     BOFFILE bf = bof_read_open(argv[1]);
     BOFHeader bh = bof_read_header(bf);
 
-    int pc = bh.text_start_address;
+    PC = bh.text_start_address;
 
     //initialize important registers
     setRegister("$gp", bh.data_start_address);
@@ -78,7 +81,7 @@ int main(int argc , char **argv){
     //fetch execute cycle loop
     for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
         if(isTracing)
-            printTrace(pc, bh, memory.instrs[i], words);
+            printTrace(bh, memory.instrs[i], words);
 
         //fetch and execute
         int curInstrType = instruction_type(memory.instrs[i]);
@@ -103,15 +106,11 @@ int main(int argc , char **argv){
         }
     }
 
-
-
-
-
     bof_close(bf);
 }
 
- void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]){
-     printf("      PC: %d\n", pc);
+ void printTrace(BOFHeader bh,  bin_instr_t instruction, int words[]){
+     printf("      PC: %d\n", PC);
      printf("GPR[$0 ]: %d   	GPR[$at]: %d   	GPR[$v0]: %d   	GPR[$v1]: %d   	GPR[$a0]: %d   	GPR[$a1]: %d\n", REGISTERS[0], REGISTERS[1], REGISTERS[2], REGISTERS[3], REGISTERS[4], REGISTERS[5]);
      printf("GPR[$a2]: %d   	GPR[$a3]: %d   	GPR[$t0]: %d   	GPR[$t1]: %d   	GPR[$t2]: %d   	GPR[$t3]: %d\n", REGISTERS[6], REGISTERS[7], REGISTERS[8], REGISTERS[9], REGISTERS[10], REGISTERS[11]);
      printf("GPR[$t4]: %d   	GPR[$t5]: %d   	GPR[$t6]: %d   	GPR[$t7]: %d   	GPR[$s0]: %d   	GPR[$s1]: %d\n", REGISTERS[12], REGISTERS[13], REGISTERS[14], REGISTERS[15], REGISTERS[16], REGISTERS[17]);
@@ -127,7 +126,7 @@ int main(int argc , char **argv){
      printf("     %d: %d ...", address,  0); //TODO is this zero everytime
      printf("\n");
      printf("     %d: 0	...\n", bh.stack_bottom_addr); //TODO is that zero everytime? What do ... signify?
-     printf("==> addr:    %d %s\n", pc, instruction_assembly_form(instruction));
+     printf("==> addr:    %d %s\n", PC, instruction_assembly_form(instruction));
  }
 
 //figures out what instruction to do
@@ -135,6 +134,44 @@ void doRegisterInstruction(bin_instr_t instruction){
     switch((int) instruction.reg.func){
         case ADD_F:
             ADD(instruction);
+            break;
+        case SUB_F:
+            SUB(instruction);
+            break;
+        case MUL_F:
+            MUL(instruction);
+            break;
+        case DIV_F:
+            DIV(instruction);
+        case MFHI_F:
+            MFHI(instruction);
+            break;
+        case MFLO_F:
+            MFLO(instruction);
+            break;
+        case AND_F:
+            AND(instruction);
+            break;
+        case BOR_F:
+            BOR(instruction);
+            break;
+        case NOR_F:
+            NOR(instruction);
+            break;
+        case XOR_F:
+            XOR(instruction);
+            break;
+        case SLL_F:
+            SLL(instruction);
+            break;
+        case SRL_F:
+            SRL(instruction);
+            break;
+        case JR_F:
+            JR(instruction);
+            break;
+        case SYSCALL_F:
+            //SYSCALL(instruction);
             break;
     }
 }
