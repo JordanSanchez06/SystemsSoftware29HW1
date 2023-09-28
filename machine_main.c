@@ -56,11 +56,9 @@ int main(int argc , char **argv) {
         memory.instrs[i] = instruction_read(bf);
     }
 
-    //collect words
-    int wordCount = bh.data_length / BYTES_PER_WORD;
-    int words[wordCount];
-    for(int i = 0; i < (wordCount); i++ ) {
-        words[i] = bof_read_word(bf); //spacing to match test case
+    //collect data
+    for(int i = 0; i < (bh.data_length/BYTES_PER_WORD); i++ ) {
+        memory.words[i] = bof_read_word(bf); //spacing to match test case
     }
 
     //fetch execute cycle loop
