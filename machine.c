@@ -5,7 +5,7 @@
 #include "regname.h"
 #include "utilities.h"
 #include "machine_types.h"
-#inckude "machine_main.h"
+#include "machine_main.h"
 
 extern int REGISTERS[NUM_REGISTERS];
 
