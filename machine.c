@@ -120,7 +120,7 @@ void LBU(bin_instr_t instruction) {
 void LW(bin_instr_t instruction) {
     //LW 35 b t o Load Word (4 bytes):
     //GPR[t] ← memory[GPR[b] + formOffset(o)]
-	REGISTERS[instruction.immed.rt] = memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed);
+	REGISTERS[instruction.immed.rt] = memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)];
 }
 
 void SB(bin_instr_t instruction) {
