@@ -146,8 +146,8 @@ void JMP(address_type a, address_type PC) {
 
 void JAL(address_type a, address_type PC) {
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
-	PC = machine_types_formAddress(PC, a);
 	REGISTERS[a] = PC;
+	PC = machine_types_formAddress(PC, a);
 }
 
 //endregion
