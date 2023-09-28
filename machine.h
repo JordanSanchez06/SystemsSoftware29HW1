@@ -6,7 +6,6 @@
 #include "regname.h"
 #include "utilities.h"
 #include "machine_types.h"
-#include "machine_main.h"
 
 #ifndef HW1_TESTS_MACHINE_H
 #define HW1_TESTS_MACHINE_H
