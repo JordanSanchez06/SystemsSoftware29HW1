@@ -4,7 +4,6 @@
 #include "machine_types.h"
 #include "instruction.h"
 #include "bof.h"
-#include "machine.h"
 
 // a size for the memory (2^16 bytes = 64K)
 #define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
