@@ -99,9 +99,11 @@ int main(int argc , char **argv){
                 break;
             case immed_instr_type:
                 printf("immediate instructions");
+				doImmediateInstruction(memory.instrs[i], pc);
                 break;
             case jump_instr_type:
                 printf("jump");
+				doJumpInstruction(i, pc)
                 break;
             case error_instr_type:
                 printf("error");
@@ -195,13 +197,13 @@ void doImmediateInstruction(bin_instr_t instruction, int pc) {
     }
 }
 
-void doJumpInstruction(bin_instr_t instruction, int pc) {
+void doJumpInstruction(address_type i, address_type pc) {
 	switch((int)) instruction.jump.func) {
         case JMP_O:
-
+			JMP(i, pc);
             break;
         case JAL_O:
-
+			JAL(i, pc);
             break;
         default:
             bail_with_error("Unkown jump instruction", instruction);
