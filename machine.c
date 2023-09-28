@@ -48,55 +48,55 @@ void setRegister(char *name, int data){
 //region IMMEDIATE FORMAT INSTRUCTION:
 
     //Name op rs rt immed (Explanation)
-void ADDI(bin_instr_t intrsuction) {
+void ADDI(bin_instr_t instrsuction) {
     //ADDI 9 s t i Add immediate: GPR[t] ← GPR[s] + sgnExt(i)
     REGISTERS[instruction.immed.rs] + machine_types_sgnExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
 }
 
-void ANDI(bin_instr_t intrsuction) {
+void ANDI(bin_instr_t instrsuction) {
     //ANDI 12 s t i Bitwise And immediate: GPR[t] ← GPR[s] ∧ zeroExt(i)
     REGISTERS[instruction.immed.rs] && machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
 }
 
-void BORI(bin_instr_t intrsuction) {
+void BORI(bin_instr_t instrsuction) {
     //BORI 13 s t i Bitwise Or immediate: GPR[t] ← GPR[s] ∨ zeroExt(i)
     REGISTERS[instruction.immed.rs] || machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
 }
 
-void XORI(bin_instr_t intrsuction) {
+void XORI(bin_instr_t instrsuction) {
 	//XORI 14 s t i Bitwise Xor immediate: GPR[t] ← GPR[s] xor zeroExt(i)
     REGISTERS[instruction.immed.rs] ^ machine_types_zeroExt(instruction.immed.immed) = REGISTERS[instruction.immed.rt]
 }
 
-void BEQ(bin_instr_t intrsuction, address_type pc) {
+void BEQ(bin_instr_t instrsuction, address_type pc) {
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
     if(REGISTERS[instruction.immed.rs] == REGISTERS[instruction.immed.rt]) {
         pc += machine_types_formOffset(instruction.immed.immed);
     }
 }
 
-void BGEZ(bin_instr_t intrsuction, address_type pc) {
+void BGEZ(bin_instr_t instrsuction, address_type pc) {
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] >= REGISTERS[0]) {
 		pc += machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BGTZ(bin_instr_t intrsuction, address_type pc) {
+void BGTZ(bin_instr_t instrsuction, address_type pc) {
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] > REGISTERS[0]) {
 		pc += machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BLEZ(bin_instr_t intrsuction, address_type pc) {
+void BLEZ(bin_instr_t instrsuction, address_type pc) {
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] <= REGISTERS[0]) {
 		pc += machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BLTZ(bin_instr_t intrsuction, address_type pc) {
+void BLTZ(bin_instr_t instrsuction, address_type pc) {
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] < REGISTERS[0]) {
 		pc += machine_types_formOffset(instruction.immed.immed);
@@ -110,25 +110,25 @@ void BNE(bin_instr_t instruction, address_type pc) {
 	}
 }
 
-void LBU(bin_instr_t intrsuction) {
+void LBU(bin_instr_t instrsuction) {
     //LBU 36 b t o Load Byte Unsigned:
     //GPR[t] ← zeroExt(memory[GPR[b] + formOffset(o)])
 	REGISTERS[instruction.immed.rt] = machine_types_zeroExt(memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)]);
 }
 
-void LW(bin_instr_t intrsuction) {
+void LW(bin_instr_t instrsuction) {
     //LW 35 b t o Load Word (4 bytes):
     //GPR[t] ← memory[GPR[b] + formOffset(o)]
 	REGISTERS[instruction.immed.rt] = memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed);
 }
 
-void SB(bin_instr_t intrsuction) {
+void SB(bin_instr_t instrsuction) {
     //SB 40 b t o Store Byte (least significant byte of GPR[t]):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
 	memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
 }
 
-void SW(bin_instr_t intrsuction) {
+void SW(bin_instr_t instrsuction) {
     //SW 43 b t o Store Word (4 bytes):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
 	memory[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
