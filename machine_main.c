@@ -26,9 +26,9 @@ int pc;
 void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
 void doRegisterInstruction(bin_instr_t instruction);
 void doImmediateInstruction(bin_instr_t instruction, address_type pc);
-void doJumpInstruction(address_type i, address_type pc);
+void doJumpInstruction(bin_instr_t instruction, address_type i, address_type pc);
 
-int main(int argc , char **argv){
+int main(int argc , char **argv) {
     if(strcmp(argv[1],"-p") == 0) {//for -p option
 
         BOFFILE bf = bof_read_open(argv[2]);
@@ -103,18 +103,14 @@ int main(int argc , char **argv){
                 break;
             case jump_instr_type:
                 printf("jump");
-				doJumpInstruction(i, pc)
+				doJumpInstruction(memory.instrs[i], i, pc);
                 break;
             case error_instr_type:
                 printf("error");
                 break;
         }
     }
-
-
-
-
-
+	
     bof_close(bf);
 }
 
@@ -147,8 +143,8 @@ void doRegisterInstruction(bin_instr_t instruction) {
     }
 }
 
-void doImmediateInstruction(bin_instr_t instruction, int pc) {
-    switch((int) instruction.immed.func) {
+void doImmediateInstruction(bin_instr_t instruction, address_type pc) {
+    switch((int) instruction.immed.op) {
         case ADDI_O:
 	        ADDI(instruction);
 	        break;
@@ -198,7 +194,7 @@ void doImmediateInstruction(bin_instr_t instruction, int pc) {
 }
 
 void doJumpInstruction(address_type i, address_type pc) {
-	switch((int)) instruction.jump.func) {
+	switch((int) instruction.jump.op) {
         case JMP_O:
 			JMP(i, pc);
             break;
