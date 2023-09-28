@@ -50,17 +50,17 @@ extern void BORI(bin_instr_t intrsuction);
     //BORI 13 s t i Bitwise Or immediate: GPR[t] ← GPR[s] ∨ zeroExt(i)
 extern void XORI(bin_instr_t intrsuction);
     //XORI 14 s t i Bitwise Xor immediate: GPR[t] ← GPR[s] xor zeroExt(i)
-extern void BEQ(bin_instr_t intrsuction, address_type pc);
+extern void BEQ(bin_instr_t intrsuction, address_type PC);
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
-extern void BGEZ(bin_instr_t intrsuction, address_type pc);
+extern void BGEZ(bin_instr_t intrsuction, address_type PC);
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
-extern void BGTZ(bin_instr_t intrsuction, address_type pc);
+extern void BGTZ(bin_instr_t intrsuction, address_type PC);
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
-extern void BLEZ(bin_instr_t intrsuction, address_type pc);
+extern void BLEZ(bin_instr_t intrsuction, address_type PC);
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
-extern void BLTZ(bin_instr_t intrsuction, address_type pc);
+extern void BLTZ(bin_instr_t intrsuction, address_type PC);
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
-extern void BNE(bin_instr_t intrsuction, address_type pc);
+extern void BNE(bin_instr_t intrsuction, address_type PC);
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
 extern void LBU(bin_instr_t intrsuction);
     //LBU 36 b t o Load Byte Unsigned:
@@ -79,9 +79,9 @@ extern void SW(bin_instr_t intrsuction);
 //region JUMP TYPE INSTRUCTIONS
 
     //Name op addr (Explanation)
-extern void JMP(address_type a, address_type pc);
+extern void JMP(address_type a, address_type PC);
     //JMP 2 a Jump: PC ← formAddress(PC, a)
-extern void JAL(address_type a, address_type pc);
+extern void JAL(address_type a, address_type PC);
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
 
     //endregion
