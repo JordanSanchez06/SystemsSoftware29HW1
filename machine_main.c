@@ -21,6 +21,7 @@ int REGISTERS[NUM_REGISTERS];
 
 void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
 void doRegisterInstruction(bin_instr_t instruction);
+void doImmediateInstruction(bin_instr_t instruction);
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
@@ -131,10 +132,60 @@ int main(int argc , char **argv){
  }
 
 //figures out what instruction to do
-void doRegisterInstruction(bin_instr_t instruction){
-    switch((int) instruction.reg.func){
+void doRegisterInstruction(bin_instr_t instruction) {
+    switch((int) instruction.reg.func) {
         case ADD_F:
             ADD(instruction);
+            break;
+    }
+}
+
+void doImmediateInstruction(bin_instr_t instruction) {
+    switch((int) instruction.immed.func) {
+        case ADDI_O:
+	        
+	        break;
+        case ANDI_O:
+	        
+	        break;
+        case BORI_O:
+            
+	        break;
+        case XORI_O:
+	        
+	        break;
+        case BEQ_O:
+	        
+	        break;
+        case BGEZ_O:
+	        
+	        break;
+        case BGTZ_O:
+	        
+	        break;
+        case BLEZ_O:
+	        
+	        break;
+        case BLTZ_O:
+	        
+	        break;
+        case BNE_O:
+        	
+	        break;
+        case LBU_O:
+        	
+	        break;
+        case LW_O:
+        	
+	        break;
+        case SB_O:
+        	
+	        break;
+        case SW_O:
+        	
+	        break;
+        default:
+
             break;
     }
 }
