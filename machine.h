@@ -42,22 +42,36 @@ extern void DIV(int s, int t);
 //region IMMEDIATE FORMAT INSTRUCTION:
 
     //Name op rs rt immed (Explanation)
+extern void ADDI(bin_instr_t intrsuction);
     //ADDI 9 s t i Add immediate: GPR[t] ← GPR[s] + sgnExt(i)
+extern void ANDI(bin_instr_t intrsuction);
     //ANDI 12 s t i Bitwise And immediate: GPR[t] ← GPR[s] ∧ zeroExt(i)
+extern void BORI(bin_instr_t intrsuction);
     //BORI 13 s t i Bitwise Or immediate: GPR[t] ← GPR[s] ∨ zeroExt(i)
+extern void XORI(bin_instr_t intrsuction);
     //XORI 14 s t i Bitwise Xor immediate: GPR[t] ← GPR[s] xor zeroExt(i)
+extern void BEQ(bin_instr_t intrsuction);
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
+extern void BGEZ(bin_instr_t intrsuction);
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
+extern void BGTZ(bin_instr_t intrsuction);
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
+extern void BLEZ(bin_instr_t intrsuction);
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
+extern void BLTZ(bin_instr_t intrsuction);
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
+extern void BNE(bin_instr_t intrsuction);
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
+extern void LBU(bin_instr_t intrsuction);
     //LBU 36 b t o Load Byte Unsigned:
     //GPR[t] ← zeroExt(memory[GPR[b] + formOffset(o)])
+extern void LW(bin_instr_t intrsuction);
     //LW 35 b t o Load Word (4 bytes):
     //GPR[t] ← memory[GPR[b] + formOffset(o)]
+extern void SB(bin_instr_t intrsuction);
     //SB 40 b t o Store Byte (least significant byte of GPR[t]):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
+extern void SW(bin_instr_t intrsuction);
     //SW 43 b t o Store Word (4 bytes):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
 
