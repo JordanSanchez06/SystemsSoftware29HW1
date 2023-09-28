@@ -20,6 +20,7 @@ int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
 
 void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
+void doRegisterInstruction(bin_instr_t instruction);
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
@@ -76,12 +77,16 @@ int main(int argc , char **argv){
 
     //fetch execute cycle loop
     for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
+        if(isTracing)
+            printTrace(pc, bh, memory.instrs[i], words);
+
         //fetch and execute
         int curInstrType = instruction_type(memory.instrs[i]);
         printf("%d", curInstrType);
         switch(curInstrType){
             case reg_instr_type:
                 printf("register instruction");
+                doRegisterInstruction(memory.instrs[i]);
                 break;
             case syscall_instr_type:
                 printf("syscall instruction");
@@ -96,10 +101,6 @@ int main(int argc , char **argv){
                 printf("error");
                 break;
         }
-
-        //print
-        if(isTracing)
-            printTrace(pc, bh, memory.instrs[i], words);
     }
 
 
@@ -128,3 +129,12 @@ int main(int argc , char **argv){
      printf("     %d: 0	...\n", bh.stack_bottom_addr); //TODO is that zero everytime? What do ... signify?
      printf("==> addr:    %d %s\n", pc, instruction_assembly_form(instruction));
  }
+
+//figures out what instruction to do
+void doRegisterInstruction(bin_instr_t instruction){
+    switch((int) instruction.reg.func){
+        case ADD_F:
+            ADD(instruction);
+            break;
+    }
+}

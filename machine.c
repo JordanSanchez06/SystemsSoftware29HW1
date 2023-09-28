@@ -20,10 +20,11 @@ void setRegister(char *name, int data){
 }
 
 //region REGISTER FORMAT INSTRUCTION:
-
     //name| op| rs rt rd | shift | func | (Explanation)
     //ADD   0   s t d       -       33    Add: GPR[d] ← GPR[s] + GPR[t]
-    void ADD(int s, int t, int d);
+    void ADD(bin_instr_t instruction){
+    REGISTERS[instruction.reg.rd] = REGISTERS[instruction.reg.rs] + REGISTERS[instruction.reg.rt];
+}
     //SUB 0 s t d - 35 Subtract: GPR[d] ← GPR[s] − GPR[t]
     void SUB(int s, int t, int d);
     //MUL 0 s t - - 25 (HI, LO) ← GPR[s] × GPR[t] Multiply: Multiply GPR[s] and GPR[t], putting the least significant bits in LO //and the most significant bits in HI.
