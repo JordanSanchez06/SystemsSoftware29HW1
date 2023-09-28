@@ -69,45 +69,45 @@ void XORI(bin_instr_t instruction) {
     REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] ^ machine_types_zeroExt(instruction.immed.immed);
 }
 
-void BEQ(bin_instr_t instruction, address_type pc) {
+void BEQ(bin_instr_t instruction, address_type PC) {
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
     if(REGISTERS[instruction.immed.rs] == REGISTERS[instruction.immed.rt]) {
-        pc = pc + machine_types_formOffset(instruction.immed.immed);
+        PC = PC + machine_types_formOffset(instruction.immed.immed);
     }
 }
 
-void BGEZ(bin_instr_t instruction, address_type pc) {
+void BGEZ(bin_instr_t instruction, address_type PC) {
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] >= REGISTERS[0]) {
-		pc = pc + machine_types_formOffset(instruction.immed.immed);
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BGTZ(bin_instr_t instruction, address_type pc) {
+void BGTZ(bin_instr_t instruction, address_type PC) {
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] > REGISTERS[0]) {
-		pc = pc + machine_types_formOffset(instruction.immed.immed);
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BLEZ(bin_instr_t instruction, address_type pc) {
+void BLEZ(bin_instr_t instruction, address_type PC) {
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] <= REGISTERS[0]) {
-		pc = pc + machine_types_formOffset(instruction.immed.immed);
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BLTZ(bin_instr_t instruction, address_type pc) {
+void BLTZ(bin_instr_t instruction, address_type PC) {
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] < REGISTERS[0]) {
-		pc = pc + machine_types_formOffset(instruction.immed.immed);
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BNE(bin_instr_t instruction, address_type pc) {
+void BNE(bin_instr_t instruction, address_type PC) {
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] != REGISTERS[instruction.immed.rt]) {
-		pc = pc + machine_types_formOffset(instruction.immed.immed);
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
@@ -139,15 +139,15 @@ void SW(bin_instr_t instruction) {
 //region JUMP TYPE INSTRUCTIONS
 
     //Name op addr (Explanation)
-void JMP(address_type a, address_type pc) {
+void JMP(address_type a, address_type PC) {
     //JMP 2 a Jump: PC ← formAddress(PC, a)
-	pc = machine_types_formAddress(pc, a);
+	PC = machine_types_formAddress(PC, a);
 }
 
-void JAL(address_type a, address_type pc) {
+void JAL(address_type a, address_type PC) {
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
-	pc = machine_types_formAddress(pc, a);
-	REGISTERS[a] = pc;
+	PC = machine_types_formAddress(PC, a);
+	REGISTERS[a] = PC;
 }
 
 //endregion
