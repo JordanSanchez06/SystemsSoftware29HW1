@@ -64,7 +64,7 @@ int main(int argc , char **argv) {
     //fetch execute cycle loop
     for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
         if(isTracing)
-            printTrace(PC, bh, memory.instrs[i], words);
+            printTrace(PC, bh, memory.instrs[i], memory.words);
 
         //fetch and execute
         int curInstrType = instruction_type(memory.instrs[i]);
