@@ -25,8 +25,8 @@ int pc;
 
 void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
 void doRegisterInstruction(bin_instr_t instruction);
-void doImmediateInstruction(bin_instr_t instruction, int pc);
-void doJumpInstruction(bin_instr_t instruction, int pc);
+void doImmediateInstruction(bin_instr_t instruction, address_type pc);
+void doJumpInstruction(address_type i, address_type pc);
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
