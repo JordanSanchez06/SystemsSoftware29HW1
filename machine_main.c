@@ -7,6 +7,9 @@
 #include "machine.h"
 #include "machine_main.h"
 
+int REGISTERS[NUM_REGISTERS];
+address_type PC;
+
 int main(int argc , char **argv) {
     if(strcmp(argv[1],"-p") == 0) {//for -p option
 
@@ -15,10 +18,10 @@ int main(int argc , char **argv) {
 
         //print instructions
         printf("Addr Instruction\n");
-        pc = bh.text_start_address;
+        PC = bh.text_start_address;
         for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
-            printf("\t%d %s\n", pc, instruction_assembly_form(instruction_read(bf)));
-            pc += 4;
+            printf("\t%d %s\n", PC, instruction_assembly_form(instruction_read(bf)));
+            PC += 4;
         }
 
         //print initial data values.
@@ -41,7 +44,7 @@ int main(int argc , char **argv) {
     BOFFILE bf = bof_read_open(argv[1]);
     BOFHeader bh = bof_read_header(bf);
 
-    pc = bh.text_start_address;
+    PC = bh.text_start_address;
 
     //initialize important registers
     setRegister("$gp", bh.data_start_address);
@@ -63,7 +66,7 @@ int main(int argc , char **argv) {
     //fetch execute cycle loop
     for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
         if(isTracing)
-            printTrace(pc, bh, memory.instrs[i], words);
+            printTrace(PC, bh, memory.instrs[i], words);
 
         //fetch and execute
         int curInstrType = instruction_type(memory.instrs[i]);
@@ -78,11 +81,11 @@ int main(int argc , char **argv) {
                 break;
             case immed_instr_type:
                 printf("immediate instructions");
-				doImmediateInstruction(memory.instrs[i], pc);
+				doImmediateInstruction(memory.instrs[i], PC);
                 break;
             case jump_instr_type:
                 printf("jump");
-				doJumpInstruction(memory.instrs[i], i, pc);
+				doJumpInstruction(memory.instrs[i], i, PC);
                 break;
             case error_instr_type:
                 printf("error");
@@ -93,8 +96,8 @@ int main(int argc , char **argv) {
     bof_close(bf);
 }
 
- void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]){
-     printf("      PC: %d\n", pc);
+ void printTrace(int PC, BOFHeader bh,  bin_instr_t instruction, int words[]){
+     printf("      PC: %d\n", PC);
      printf("GPR[$0 ]: %d   	GPR[$at]: %d   	GPR[$v0]: %d   	GPR[$v1]: %d   	GPR[$a0]: %d   	GPR[$a1]: %d\n", REGISTERS[0], REGISTERS[1], REGISTERS[2], REGISTERS[3], REGISTERS[4], REGISTERS[5]);
      printf("GPR[$a2]: %d   	GPR[$a3]: %d   	GPR[$t0]: %d   	GPR[$t1]: %d   	GPR[$t2]: %d   	GPR[$t3]: %d\n", REGISTERS[6], REGISTERS[7], REGISTERS[8], REGISTERS[9], REGISTERS[10], REGISTERS[11]);
      printf("GPR[$t4]: %d   	GPR[$t5]: %d   	GPR[$t6]: %d   	GPR[$t7]: %d   	GPR[$s0]: %d   	GPR[$s1]: %d\n", REGISTERS[12], REGISTERS[13], REGISTERS[14], REGISTERS[15], REGISTERS[16], REGISTERS[17]);
@@ -110,7 +113,7 @@ int main(int argc , char **argv) {
      printf("     %d: %d ...", address,  0); //TODO is this zero everytime
      printf("\n");
      printf("     %d: 0	...\n", bh.stack_bottom_addr); //TODO is that zero everytime? What do ... signify?
-     printf("==> addr:    %d %s\n", pc, instruction_assembly_form(instruction));
+     printf("==> addr:    %d %s\n", PC, instruction_assembly_form(instruction));
  }
 
 //figures out what instruction to do
@@ -122,7 +125,7 @@ void doRegisterInstruction(bin_instr_t instruction) {
     }
 }
 
-void doImmediateInstruction(bin_instr_t instruction, address_type pc) {
+void doImmediateInstruction(bin_instr_t instruction, address_type PC) {
     switch((int) instruction.immed.op) {
         case ADDI_O:
 	        ADDI(instruction);
@@ -137,22 +140,22 @@ void doImmediateInstruction(bin_instr_t instruction, address_type pc) {
 	        XORI(instruction);
 	        break;
         case BEQ_O:
-	        BEQ(instruction, pc);
+	        BEQ(instruction, PC);
 	        break;
         case BGEZ_O:
-	        BGEZ(instruction, pc);
+	        BGEZ(instruction, PC);
 	        break;
         case BGTZ_O:
-	        BGTZ(instruction, pc);
+	        BGTZ(instruction, PC);
 	        break;
         case BLEZ_O:
-	        BLEZ(instruction, pc);
+	        BLEZ(instruction, PC);
 	        break;
         case BLTZ_O:
-	        BLTZ(instruction, pc);
+	        BLTZ(instruction, PC);
 	        break;
         case BNE_O:
-        	BNE(instruction, pc);
+        	BNE(instruction, PC);
 	        break;
         case LBU_O:
         	LBU(instruction);
@@ -172,13 +175,13 @@ void doImmediateInstruction(bin_instr_t instruction, address_type pc) {
     }
 }
 
-void doJumpInstruction(bin_instr_t instruction, address_type i, address_type pc) {
+void doJumpInstruction(bin_instr_t instruction, address_type i, address_type PC) {
 	switch((int) instruction.jump.op) {
         case JMP_O:
-			JMP(i, pc);
+			JMP(i, PC);
             break;
         case JAL_O:
-			JAL(i, pc);
+			JAL(i, PC);
             break;
         default:
             bail_with_error("Unkown jump instruction", instruction);
