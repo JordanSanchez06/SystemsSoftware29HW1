@@ -17,13 +17,13 @@ static union mem_u {
 } memory; //https://webcourses.ucf.edu/courses/1443631/discussion_topics/7460061
 
 //data for each register //extern so we can use it in machine.c where our ADD, SUB, etc. functions will be.
-int REGISTERS[NUM_REGISTERS];
+extern int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
 
 //program counter is needed for some immediate instructions
-int pc;
+extern int pc;
 
-void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
-void doRegisterInstruction(bin_instr_t instruction);
-void doImmediateInstruction(bin_instr_t instruction, address_type pc);
-void doJumpInstruction(bin_instr_t instruction, address_type i, address_type pc);
+extern void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
+extern void doRegisterInstruction(bin_instr_t instruction);
+extern void doImmediateInstruction(bin_instr_t instruction, address_type pc);
+extern void doJumpInstruction(bin_instr_t instruction, address_type i, address_type pc);
