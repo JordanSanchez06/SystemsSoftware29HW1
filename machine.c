@@ -61,7 +61,7 @@ void ANDI(bin_instr_t instruction) {
 
 void BORI(bin_instr_t instruction) {
     //BORI 13 s t i Bitwise Or immediate: GPR[t] ← GPR[s] ∨ zeroExt(i)
-    REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] || machine_types_zeroExt(instruction.immed.immed)
+    REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] || machine_types_zeroExt(instruction.immed.immed);
 }
 
 void XORI(bin_instr_t instruction) {
@@ -147,7 +147,7 @@ void JMP(address_type a, address_type pc) {
 void JAL(address_type a, address_type pc) {
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
 	pc = machine_types_formAddress(pc, a);
-	REGISTER[a] = pc;
+	REGISTERS[a] = pc;
 }
 
 //endregion
