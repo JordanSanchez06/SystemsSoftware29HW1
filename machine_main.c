@@ -26,6 +26,7 @@ int pc;
 void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
 void doRegisterInstruction(bin_instr_t instruction);
 void doImmediateInstruction(bin_instr_t instruction, int pc);
+void doJumpInstruction(bin_instr_t instruction, int pc);
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
@@ -190,6 +191,20 @@ void doImmediateInstruction(bin_instr_t instruction, int pc) {
 		    break;
         default:
 			bail_with_error("Unknown immediate instruction", instruction);
+            break;
+    }
+}
+
+void doJumpInstruction(bin_instr_t instruction, int pc) {
+	switch((int)) instruction.jump.func) {
+        case JMP_O:
+
+            break;
+        case JAL_O:
+
+            break;
+        default:
+            bail_with_error("Unkown jump instruction", instruction);
             break;
     }
 }
