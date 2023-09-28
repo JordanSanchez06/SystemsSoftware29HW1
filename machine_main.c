@@ -21,7 +21,7 @@ int main(int argc , char **argv) {
         PC = bh.text_start_address;
         for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
             printf("\t%d %s\n", PC, instruction_assembly_form(instruction_read(bf)));
-            PC += 4;
+            PC = PC + 4;
         }
 
         //print initial data values.
@@ -63,8 +63,10 @@ int main(int argc , char **argv) {
 
     //fetch execute cycle loop
     for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
-        if(isTracing)
+        if(isTracing) {
             printTrace(PC, bh, memory.instrs[i], memory.words);
+			PC = PC + 4;
+		}
 
         //fetch and execute
         int curInstrType = instruction_type(memory.instrs[i]);
@@ -112,7 +114,6 @@ int main(int argc , char **argv) {
      printf("\n");
      printf("     %d: 0	...\n", bh.stack_bottom_addr); //TODO is that zero everytime? What do ... signify?
      printf("==> addr:    %d %s\n", PC, instruction_assembly_form(instruction));
-	 PC += 4;
  }
 
 //figures out what instruction to do
