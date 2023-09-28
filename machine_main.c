@@ -19,9 +19,12 @@ static union mem_u {
 int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
 
+//program counter is needed for some immediate instructions
+int pc;
+
 void printTrace(int pc, BOFHeader bh,  bin_instr_t instruction, int words[]);
 void doRegisterInstruction(bin_instr_t instruction);
-void doImmediateInstruction(bin_instr_t instruction);
+void doImmediateInstruction(bin_instr_t instruction, int pc);
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
@@ -31,7 +34,7 @@ int main(int argc , char **argv){
 
         //print instructions
         printf("Addr Instruction\n");
-        int pc = bh.text_start_address;
+        pc = bh.text_start_address;
         for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
             printf("\t%d %s\n", pc, instruction_assembly_form(instruction_read(bf)));
             pc += 4;
@@ -57,7 +60,7 @@ int main(int argc , char **argv){
     BOFFILE bf = bof_read_open(argv[1]);
     BOFHeader bh = bof_read_header(bf);
 
-    int pc = bh.text_start_address;
+    pc = bh.text_start_address;
 
     //initialize important registers
     setRegister("$gp", bh.data_start_address);
@@ -140,7 +143,7 @@ void doRegisterInstruction(bin_instr_t instruction) {
     }
 }
 
-void doImmediateInstruction(bin_instr_t instruction) {
+void doImmediateInstruction(bin_instr_t instruction, int pc) {
     switch((int) instruction.immed.func) {
         case ADDI_O:
 	        
@@ -183,7 +186,7 @@ void doImmediateInstruction(bin_instr_t instruction) {
 	        break;
         case SW_O:
         	
-	        break;
+		    break;
         default:
 
             break;
