@@ -5,6 +5,7 @@
 #include "instruction.h"
 #include "bof.h"
 #include "machine.h"
+
 // a size for the memory (2^16 bytes = 64K)
 #define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
 #define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
@@ -146,49 +147,49 @@ void doRegisterInstruction(bin_instr_t instruction) {
 void doImmediateInstruction(bin_instr_t instruction, int pc) {
     switch((int) instruction.immed.func) {
         case ADDI_O:
-	        
+	        ADDI(instruction);
 	        break;
         case ANDI_O:
-	        
+	        ANDI(instruction);
 	        break;
         case BORI_O:
-            
+            BORI(instruction);
 	        break;
         case XORI_O:
-	        
+	        XORI(instruction);
 	        break;
         case BEQ_O:
-	        
+	        BEQ(instruction, pc);
 	        break;
         case BGEZ_O:
-	        
+	        BGEZ(instruction, pc);
 	        break;
         case BGTZ_O:
-	        
+	        BGTZ(instruction, pc);
 	        break;
         case BLEZ_O:
-	        
+	        BLEZ(instruction, pc);
 	        break;
         case BLTZ_O:
-	        
+	        BLTZ(instruction, pc);
 	        break;
         case BNE_O:
-        	
+        	BNE(instruction, pc);
 	        break;
         case LBU_O:
-        	
+        	LBU(instruction);
 	        break;
         case LW_O:
-        	
+        	LW(instruction);
 	        break;
         case SB_O:
-        	
+        	SB(instruction);
 	        break;
         case SW_O:
-        	
+        	SW(instruction);
 		    break;
         default:
-
+			bail_with_error("Unknown immediate instruction", instruction);
             break;
     }
 }
