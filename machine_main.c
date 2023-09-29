@@ -80,7 +80,6 @@ int main(int argc , char **argv){
         int curInstrType = instruction_type(memory.instrs[PC/4]);
         printf("%d", curInstrType);
 
-        PC += 4;
         if(doEnforceInvariants()){
             fprintf(stderr, "Invariant Violated");
             return 1;
@@ -99,12 +98,14 @@ int main(int argc , char **argv){
                 break;
             case jump_instr_type:
                 printf("jump");
-				doJumpInstruction(memory.instrs[i], i, PC);
+				doJumpInstruction(memory.instrs[PC/4], PC/4, PC);
                 break;
             case error_instr_type:
                 printf("error");
                 break;
         }
+
+        PC += 4;
     }
 
     bof_close(bf);
@@ -181,6 +182,7 @@ void doRegisterInstruction(bin_instr_t instruction){
 }
 
 void doImmediateInstruction(bin_instr_t instruction, address_type PC) {
+    printf("%d\n", instruction.immed.op);
     switch((int) instruction.immed.op) {
         case ADDI_O:
 	        ADDI(instruction);
