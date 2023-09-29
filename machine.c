@@ -4,11 +4,12 @@
 #include <string.h>
 #include "regname.h"
 #include "utilities.h"
+#include "machine_types.h"
+#include "machine_main.h"
 
 extern int REGISTERS[NUM_REGISTERS];
-extern int HI;
-extern int LO;
-extern int PC;
+address_type HI;
+address_type LO;
 
 void setRegister(char *name, int data){
     int ptr = 0;
@@ -94,37 +95,110 @@ void JR(bin_instr_t instruction){
 }
     //SYSCALL 0 - - - - 12 System Call: (see Table 6)
 
-
 //endregion
 //region IMMEDIATE FORMAT INSTRUCTION:
 
     //Name op rs rt immed (Explanation)
+void ADDI(bin_instr_t instruction) {
     //ADDI 9 s t i Add immediate: GPR[t] ← GPR[s] + sgnExt(i)
+     REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] + machine_types_sgnExt(instruction.immed.immed);
+}
+
+void ANDI(bin_instr_t instruction) {
     //ANDI 12 s t i Bitwise And immediate: GPR[t] ← GPR[s] ∧ zeroExt(i)
+	REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] && machine_types_zeroExt(instruction.immed.immed);
+}
+
+void BORI(bin_instr_t instruction) {
     //BORI 13 s t i Bitwise Or immediate: GPR[t] ← GPR[s] ∨ zeroExt(i)
-    //XORI 14 s t i Bitwise Xor immediate: GPR[t] ← GPR[s] xor zeroExt(i)
+    REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] || machine_types_zeroExt(instruction.immed.immed);
+}
+
+void XORI(bin_instr_t instruction) {
+	//XORI 14 s t i Bitwise Xor immediate: GPR[t] ← GPR[s] xor zeroExt(i)
+    REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] ^ machine_types_zeroExt(instruction.immed.immed);
+}
+
+void BEQ(bin_instr_t instruction, address_type PC) {
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
+    if(REGISTERS[instruction.immed.rs] == REGISTERS[instruction.immed.rt]) {
+        PC = PC + machine_types_formOffset(instruction.immed.immed);
+    }
+}
+
+void BGEZ(bin_instr_t instruction, address_type PC) {
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
+	if(REGISTERS[instruction.immed.rs] >= REGISTERS[0]) {
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
+	}
+}
+
+void BGTZ(bin_instr_t instruction, address_type PC) {
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
+	if(REGISTERS[instruction.immed.rs] > REGISTERS[0]) {
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
+	}
+}
+
+void BLEZ(bin_instr_t instruction, address_type PC) {
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
+	if(REGISTERS[instruction.immed.rs] <= REGISTERS[0]) {
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
+	}
+}
+
+void BLTZ(bin_instr_t instruction, address_type PC) {
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
+	if(REGISTERS[instruction.immed.rs] < REGISTERS[0]) {
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
+	}
+}
+
+void BNE(bin_instr_t instruction, address_type PC) {
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
+	if(REGISTERS[instruction.immed.rs] != REGISTERS[instruction.immed.rt]) {
+		PC = PC + machine_types_formOffset(instruction.immed.immed);
+	}
+}
+
+void LBU(bin_instr_t instruction) {
     //LBU 36 b t o Load Byte Unsigned:
     //GPR[t] ← zeroExt(memory[GPR[b] + formOffset(o)])
+	REGISTERS[instruction.immed.rt] = machine_types_zeroExt(memory.bytes[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)]);
+}
+
+void LW(bin_instr_t instruction) {
     //LW 35 b t o Load Word (4 bytes):
     //GPR[t] ← memory[GPR[b] + formOffset(o)]
+	REGISTERS[instruction.immed.rt] = memory.words[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)];
+}
+
+void SB(bin_instr_t instruction) {
     //SB 40 b t o Store Byte (least significant byte of GPR[t]):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
+	memory.bytes[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
+}
+
+void SW(bin_instr_t instruction) {
     //SW 43 b t o Store Word (4 bytes):
     //memory[GPR[b] + formOffset(o)] ← GPR[t]
+	memory.words[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
+}
 
 //endregion
 //region JUMP TYPE INSTRUCTIONS
 
     //Name op addr (Explanation)
+void JMP(address_type a, address_type PC) {
+    //JMP 2 a Jump: PC ← formAddress(PC, a)
+	PC = machine_types_formAddress(PC, a);
+}
 
-    //JMP 2 a Jump: PC ← formAddress(P C, a)
+void JAL(address_type a, address_type PC) {
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
+	REGISTERS[a] = PC;
+	PC = machine_types_formAddress(PC, a);
+}
 
 //endregion
 //region System Calls

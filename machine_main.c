@@ -5,11 +5,11 @@
 #include "instruction.h"
 #include "bof.h"
 #include "machine.h"
+#include "machine_main.h"
 // a size for the memory (2^16 bytes = 64K)
 #define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
 #define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
 #define MAX_STACK_HEIGHT 999999 //TODO how to get this
-
 
 static union mem_u {
     byte_type bytes[MEMORY_SIZE_IN_BYTES];
@@ -20,10 +20,8 @@ static union mem_u {
 //data for each register //extern so we can use it in machine.c where our ADD, SUB, etc. functions will be.
 int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
-int PC;
-int HI;
-int LO;
 int HALT;
+address_type PC;
 
 void printTrace(BOFHeader bh,  bin_instr_t instruction);
 void doRegisterInstruction(bin_instr_t instruction);
@@ -37,10 +35,10 @@ int main(int argc , char **argv){
 
         //print instructions
         printf("Addr Instruction\n");
-        int pc = bh.text_start_address;
+        PC = bh.text_start_address;
         for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
-            printf("\t%d %s\n", pc, instruction_assembly_form(instruction_read(bf)));
-            pc += 4;
+            printf("\t%d %s\n", PC, instruction_assembly_form(instruction_read(bf)));
+            PC = PC + 4;
         }
 
         //print initial data values.
@@ -71,13 +69,12 @@ int main(int argc , char **argv){
     setRegister("$sp", bh.stack_bottom_addr); //i believe frame and stack pointer share this value but i could be wrong.
 
     //collect instructions
-    int i;
-    for(i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
+    for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
         memory.instrs[i] = instruction_read(bf);
     }
 
-    //collect words
-    for(i = bh.data_start_address; i < ((bh.data_length / BYTES_PER_WORD) + bh.data_start_address); i++ ) {
+    //collect data
+    for(int i = 0; i < (bh.data_length/BYTES_PER_WORD); i++ ) {
         memory.words[i] = bof_read_word(bf); //spacing to match test case
     }
 
@@ -105,15 +102,16 @@ int main(int argc , char **argv){
                 break;
             case immed_instr_type:
                 printf("immediate instructions");
+				doImmediateInstruction(memory.instrs[i], PC);
                 break;
             case jump_instr_type:
                 printf("jump");
+				doJumpInstruction(memory.instrs[i], i, PC);
                 break;
             case error_instr_type:
                 printf("error");
                 break;
         }
-
     }
 
     bof_close(bf);
@@ -182,6 +180,73 @@ void doRegisterInstruction(bin_instr_t instruction){
             break;
         case SYSCALL_F:
             //SYSCALL(instruction);
+            break;
+	    default:
+	    	bail_with_error("Unkown register instruction", instruction);
+			break;
+    }
+}
+
+void doImmediateInstruction(bin_instr_t instruction, address_type PC) {
+    switch((int) instruction.immed.op) {
+        case ADDI_O:
+	        ADDI(instruction);
+	        break;
+        case ANDI_O:
+	        ANDI(instruction);
+	        break;
+        case BORI_O:
+            BORI(instruction);
+	        break;
+        case XORI_O:
+	        XORI(instruction);
+	        break;
+        case BEQ_O:
+	        BEQ(instruction, PC);
+	        break;
+        case BGEZ_O:
+	        BGEZ(instruction, PC);
+	        break;
+        case BGTZ_O:
+	        BGTZ(instruction, PC);
+	        break;
+        case BLEZ_O:
+	        BLEZ(instruction, PC);
+	        break;
+        case BLTZ_O:
+	        BLTZ(instruction, PC);
+	        break;
+        case BNE_O:
+        	BNE(instruction, PC);
+	        break;
+        case LBU_O:
+        	LBU(instruction);
+	        break;
+        case LW_O:
+        	LW(instruction);
+	        break;
+        case SB_O:
+        	SB(instruction);
+	        break;
+        case SW_O:
+        	SW(instruction);
+		    break;
+        default:
+			bail_with_error("Unknown immediate instruction", instruction);
+            break;
+    }
+}
+
+void doJumpInstruction(bin_instr_t instruction, address_type i, address_type PC) {
+	switch((int) instruction.jump.op) {
+        case JMP_O:
+			JMP(i, PC);
+            break;
+        case JAL_O:
+			JAL(i, PC);
+            break;
+        default:
+            bail_with_error("Unkown jump instruction", instruction);
             break;
     }
 }
