@@ -64,7 +64,7 @@ int main(int argc , char **argv) {
     //fetch execute cycle loop
     for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
         if(isTracing) {
-            printTrace(PC, bh, memory.instrs[i], memory.words);
+            printTrace(bh, memory.instrs[i], memory.words);
 			PC = PC + 4;
 		}
 
@@ -96,7 +96,7 @@ int main(int argc , char **argv) {
     bof_close(bf);
 }
 
- void printTrace(int PC, BOFHeader bh,  bin_instr_t instruction, int words[]){
+ void printTrace(BOFHeader bh,  bin_instr_t instruction, int words[]){
      printf("      PC: %d\n", PC);
      printf("GPR[$0 ]: %d   	GPR[$at]: %d   	GPR[$v0]: %d   	GPR[$v1]: %d   	GPR[$a0]: %d   	GPR[$a1]: %d\n", REGISTERS[0], REGISTERS[1], REGISTERS[2], REGISTERS[3], REGISTERS[4], REGISTERS[5]);
      printf("GPR[$a2]: %d   	GPR[$a3]: %d   	GPR[$t0]: %d   	GPR[$t1]: %d   	GPR[$t2]: %d   	GPR[$t3]: %d\n", REGISTERS[6], REGISTERS[7], REGISTERS[8], REGISTERS[9], REGISTERS[10], REGISTERS[11]);
@@ -122,6 +122,47 @@ void doRegisterInstruction(bin_instr_t instruction) {
         case ADD_F:
             ADD(instruction);
             break;
+	case SUB_F:
+            SUB(instruction);
+            break;
+        case MUL_F:
+            MUL(instruction);
+            break;
+        case DIV_F:
+            DIV(instruction);
+        case MFHI_F:
+            MFHI(instruction);
+            break;
+        case MFLO_F:
+            MFLO(instruction);
+            break;
+        case AND_F:
+            AND(instruction);
+            break;
+        case BOR_F:
+            BOR(instruction);
+            break;
+        case NOR_F:
+            NOR(instruction);
+            break;
+        case XOR_F:
+            XOR(instruction);
+            break;
+        case SLL_F:
+            SLL(instruction);
+            break;
+        case SRL_F:
+            SRL(instruction);
+            break;
+        case JR_F:
+            JR(instruction);
+            break;
+        case SYSCALL_F:
+            //SYSCALL(instruction);
+            break;
+	    default:
+	    	bail_with_error("Unkown register instruction", instruction);
+			break;
     }
 }
 
