@@ -14,28 +14,37 @@
 
 extern void setRegister(char *name, int data);
 
-
 //region REGISTER FORMAT INSTRUCTION:
 
     //name| op| rs rt rd | shift | func | (Explanation)
     //ADD   0   s t d       -       33    Add: GPR[d] ← GPR[s] + GPR[t]
 extern void ADD(bin_instr_t instruction);
     //SUB 0 s t d - 35 Subtract: GPR[d] ← GPR[s] − GPR[t]
-extern void SUB(int s, int t, int d);
+extern void SUB(bin_instr_t instruction);
     //MUL 0 s t - - 25 (HI, LO) ← GPR[s] × GPR[t] Multiply: Multiply GPR[s] and GPR[t], putting the least significant bits in LO //and the most significant bits in HI.
-extern void MUL(int s, int t);
-
+extern void MUL(bin_instr_t instruction);
     //DIV 0 s t - - 27 Divide (remainder in HI, quotient in LO): //HI ← GPR[s] % GPR[t] //LO ← GPR[s]/GPR[t])
-extern void DIV(int s, int t);
+extern void DIV(bin_instr_t instruction);
     //MFHI 0 - - d - 16 Move from HI: GPR[d] ← HI
+extern void MFHI(bin_instr_t instruction);
     //        MFLO 0 - - d - 18 Move from LO: GPR[d] ← LO
+extern void MFLO(bin_instr_t instruction);
     //        AND 0 s t d - 36 Bitwise And: GPR[d] ← GPR[s] ∧ GPR[t]
+extern void AND(bin_instr_t instruction);
     //BOR 0 s t d - 37 Bitwise Or: GPR[d] ← GPR[s] ∨ GPR[t]
+extern void BOR(bin_instr_t instruction);
     //NOR 0 s t d - 39 Bitwise Not-Or: GPR[d] ← ¬(GPR[s] ∨ GPR[t])
+extern void NOR(bin_instr_t instruction);
     //XOR 0 s t d - 38 Bitwise Exclusive-Or: GPR[d] ← GPR[s] xor GPR[t]
+extern void XOR(bin_instr_t instruction);
     //SLL 0 - t d h 0 Shift Left Logical: GPR[d] ← GPR[t] « h
     //        SRL 0 - t d h 3 Shift Right Logical: GPR[d] ← GPR[t] » h
     //        JR 0 s 0 0 0 8 Jump Register: PC ← GPR[s]
+extern void SLL(bin_instr_t instruction);
+    //SRL 0 - t d h 3 Shift Right Logical: GPR[d] ← GPR[t] » h
+extern void SRL(bin_instr_t instruction);
+    //JR 0 s 0 0 0 8 Jump Register: PC ← GPR[s]
+extern void JR(bin_instr_t instruction);
     //SYSCALL 0 - - - - 12 System Call: (see Table 6)
 
 //endregion
