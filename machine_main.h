@@ -9,6 +9,9 @@
 #define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
 #define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
 
+//isTracing as a global variable
+int isTracing;
+
 static union mem_u {
     byte_type bytes[MEMORY_SIZE_IN_BYTES];
     word_type words[MEMORY_SIZE_IN_WORDS];
@@ -30,4 +33,6 @@ extern void printTrace(BOFHeader bh,  bin_instr_t instruction);
 extern void doRegisterInstruction(bin_instr_t instruction);
 extern void doImmediateInstruction(bin_instr_t instruction, address_type PC);
 extern void doJumpInstruction(bin_instr_t instruction, address_type i, address_type PC);
+extern void doSyscallInstruction(bin_instr_t instruction);
+extern int doEnforceInvariants();
 extern int getRegister(char * name);

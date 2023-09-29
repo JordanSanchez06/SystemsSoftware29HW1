@@ -6,6 +6,7 @@
 #include "bof.h"
 #include "machine.h"
 #include "machine_main.h"
+
 // a size for the memory (2^16 bytes = 64K)
 #define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
 #define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
@@ -18,8 +19,6 @@ address_type PC;
 
 void printTrace(BOFHeader bh,  bin_instr_t instruction);
 void doRegisterInstruction(bin_instr_t instruction);
-int doEnforceInvariants();
-void doSyscallInstruction(bin_instr_t instruction);
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
@@ -50,7 +49,7 @@ int main(int argc , char **argv){
         return 0;
     }
 
-    int isTracing = 1;
+    isTracing = 1;
 
     BOFFILE bf = bof_read_open(argv[1]);
     BOFHeader bh = bof_read_header(bf);
@@ -81,6 +80,7 @@ int main(int argc , char **argv){
         int curInstrType = instruction_type(memory.instrs[PC/4]);
         printf("%d", curInstrType);
 
+        PC += 4;
         if(doEnforceInvariants()){
             fprintf(stderr, "Invariant Violated");
             return 1;
@@ -92,7 +92,7 @@ int main(int argc , char **argv){
                 break;
             case syscall_instr_type:
                 printf("syscall instruction");
-                doSyscallInstruction(memory.instrs[i]);
+                doSyscallInstruction(memory.instrs[PC/4]);
                 break;
             case immed_instr_type:
                 printf("immediate instructions");
@@ -106,9 +106,6 @@ int main(int argc , char **argv){
                 printf("error");
                 break;
         }
-    }
-
-        PC += 4;
     }
 
     bof_close(bf);
@@ -176,7 +173,7 @@ void doRegisterInstruction(bin_instr_t instruction){
             JR(instruction);
             break;
         case SYSCALL_F:
-            //SYSCALL(instruction);
+            SYSCALL(instruction);
             break;
 	    default:
 	    	bail_with_error("Unkown register instruction", instruction);
@@ -209,7 +206,6 @@ void doSyscallInstruction(bin_instr_t instruction){
 }
 
 void doImmediateInstruction(bin_instr_t instruction, address_type PC) {
-    printf("%d\n", instruction.immed.op);
     switch((int) instruction.immed.op) {
         case ADDI_O:
 	        ADDI(instruction);
@@ -284,3 +280,4 @@ int doEnforceInvariants(){
     )return 1;
     else return 0;
 }
+
