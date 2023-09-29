@@ -8,6 +8,8 @@
 #include "machine_main.h"
 
 extern int REGISTERS[NUM_REGISTERS];
+address_type HI;
+address_type LO;
 
 void setRegister(char *name, int data){
     int ptr = 0;
