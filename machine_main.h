@@ -22,6 +22,10 @@ extern int REGISTERS[NUM_REGISTERS];
 //program counter is needed for some immediate instructions
 extern address_type PC;
 
+//special registers for mul and div
+extern address_type HI;
+extern address_type LO;
+
 extern void printTrace(int PC, BOFHeader bh,  bin_instr_t instruction, int words[]);
 extern void doRegisterInstruction(bin_instr_t instruction);
 extern void doImmediateInstruction(bin_instr_t instruction, address_type PC);
