@@ -22,6 +22,18 @@ void setRegister(char *name, int data){
     bail_with_error("register does not exist");
 }
 
+int getRegister(char *name){
+    int ptr = 0;
+    while(ptr < NUM_REGISTERS){
+        if(strcmp(name, regname_get(ptr)) == 0){
+            return REGISTERS[ptr];
+        }
+        ptr++;
+    }
+    bail_with_error("register does not exist");
+    return 0;
+}
+
 //region REGISTER FORMAT INSTRUCTION:
     //name| op| rs rt rd | shift | func | (Explanation)
     //ADD   0   s t d       -       33    Add: GPR[d] ← GPR[s] + GPR[t]

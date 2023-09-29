@@ -13,6 +13,7 @@
 #endif //HW1_TESTS_MACHINE_H
 
 extern void setRegister(char *name, int data);
+extern int getRegister(char *name);
 extern int PC;
 
 

@@ -8,6 +8,8 @@
 // a size for the memory (2^16 bytes = 64K)
 #define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
 #define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
+#define MAX_STACK_HEIGHT 999999 //TODO how to get this
+
 
 static union mem_u {
     byte_type bytes[MEMORY_SIZE_IN_BYTES];
@@ -21,9 +23,11 @@ int REGISTERS[NUM_REGISTERS];
 int PC;
 int HI;
 int LO;
+int HALT;
 
-void printTrace(BOFHeader bh,  bin_instr_t instruction, int words[]);
+void printTrace(BOFHeader bh,  bin_instr_t instruction);
 void doRegisterInstruction(bin_instr_t instruction);
+int doEnforceInvariants();
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
@@ -67,29 +71,34 @@ int main(int argc , char **argv){
     setRegister("$sp", bh.stack_bottom_addr); //i believe frame and stack pointer share this value but i could be wrong.
 
     //collect instructions
-    for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
+    int i;
+    for(i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
         memory.instrs[i] = instruction_read(bf);
     }
 
     //collect words
-    int wordCount = bh.data_length / BYTES_PER_WORD;
-    int words[wordCount];
-    for(int i = 0; i < (wordCount); i++ ) {
-        words[i] = bof_read_word(bf); //spacing to match test case
+    for(i = bh.data_start_address; i < ((bh.data_length / BYTES_PER_WORD) + bh.data_start_address); i++ ) {
+        memory.words[i] = bof_read_word(bf); //spacing to match test case
     }
 
     //fetch execute cycle loop
-    for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
+    while(!HALT) {
         if(isTracing)
-            printTrace(bh, memory.instrs[i], words);
+            printTrace(bh, memory.instrs[PC/4]);
 
         //fetch and execute
-        int curInstrType = instruction_type(memory.instrs[i]);
+        int curInstrType = instruction_type(memory.instrs[PC/4]);
         printf("%d", curInstrType);
+
+        PC += 4;
+        if(doEnforceInvariants()){
+            fprintf(stderr, "Invariant Violated");
+            return 1;
+        }
         switch(curInstrType){
             case reg_instr_type:
                 printf("register instruction");
-                doRegisterInstruction(memory.instrs[i]);
+                doRegisterInstruction(memory.instrs[PC/4]);
                 break;
             case syscall_instr_type:
                 printf("syscall instruction");
@@ -104,12 +113,13 @@ int main(int argc , char **argv){
                 printf("error");
                 break;
         }
+
     }
 
     bof_close(bf);
 }
 
- void printTrace(BOFHeader bh,  bin_instr_t instruction, int words[]){
+ void printTrace(BOFHeader bh,  bin_instr_t instruction){
      printf("      PC: %d\n", PC);
      printf("GPR[$0 ]: %d   	GPR[$at]: %d   	GPR[$v0]: %d   	GPR[$v1]: %d   	GPR[$a0]: %d   	GPR[$a1]: %d\n", REGISTERS[0], REGISTERS[1], REGISTERS[2], REGISTERS[3], REGISTERS[4], REGISTERS[5]);
      printf("GPR[$a2]: %d   	GPR[$a3]: %d   	GPR[$t0]: %d   	GPR[$t1]: %d   	GPR[$t2]: %d   	GPR[$t3]: %d\n", REGISTERS[6], REGISTERS[7], REGISTERS[8], REGISTERS[9], REGISTERS[10], REGISTERS[11]);
@@ -118,9 +128,9 @@ int main(int argc , char **argv){
      printf("GPR[$t8]: %d   	GPR[$t9]: %d   	GPR[$k0]: %d   	GPR[$k1]: %d   	GPR[$gp]: %d	GPR[$sp]: %d\n", REGISTERS[25], REGISTERS[25], REGISTERS[26], REGISTERS[27], REGISTERS[28], REGISTERS[29]);
      printf("GPR[$fp]: %d	GPR[$ra]: %d\n", REGISTERS[30], REGISTERS[31]);
      int address = bh.data_start_address;
-     int wordCount = bh.data_length / BYTES_PER_WORD;
-     for(int i = 0; i < (wordCount); i++ ) {
-         printf("     %d: %d", address , words[i]); //spacing to match test case
+     int wordCount = bh.data_length / BYTES_PER_WORD + bh.data_start_address;
+     for(int i = bh.data_start_address; i < (wordCount); i++ ) {
+         printf("     %d: %d", address , memory.words[i]); //spacing to match test case
          address += 4;
      }
      printf("     %d: %d ...", address,  0); //TODO is this zero everytime
@@ -174,4 +184,16 @@ void doRegisterInstruction(bin_instr_t instruction){
             //SYSCALL(instruction);
             break;
     }
+}
+
+int doEnforceInvariants(){
+    if(getRegister("$gp") < 0 ||//0 ≤ GPR[$gp],
+            getRegister("$gp") >= getRegister("$sp") || //GPR[$gp] < GPR[$sp]
+            getRegister("$sp") > getRegister("$fp") || //GPR[$sp] ≤ GPR[$fp]
+            getRegister("$fp") >= MAX_STACK_HEIGHT ||//GPR[$fp] < MAX_STACK_HEIGHT,
+            PC < 0 ||//0 ≤ PC,
+            PC > MEMORY_SIZE_IN_BYTES || //PC < MEMORY_SIZE_IN_BYTES
+            getRegister("$0") != 0// GPR[0] = 0
+    )return 1;
+    else return 0;
 }
