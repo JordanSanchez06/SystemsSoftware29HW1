@@ -106,7 +106,6 @@ int main(int argc , char **argv){
                 printf("error");
                 break;
         }
-    }
 
         PC += 4;
     }
