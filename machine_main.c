@@ -9,7 +9,6 @@
 // a size for the memory (2^16 bytes = 64K)
 #define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
 #define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
-#define MAX_STACK_HEIGHT 999999 //TODO how to get this
 
 static union mem_u {
     byte_type bytes[MEMORY_SIZE_IN_BYTES];
@@ -255,7 +254,7 @@ int doEnforceInvariants(){
     if(getRegister("$gp") < 0 ||//0 ≤ GPR[$gp],
             getRegister("$gp") >= getRegister("$sp") || //GPR[$gp] < GPR[$sp]
             getRegister("$sp") > getRegister("$fp") || //GPR[$sp] ≤ GPR[$fp]
-            getRegister("$fp") >= MAX_STACK_HEIGHT ||//GPR[$fp] < MAX_STACK_HEIGHT,
+            getRegister("$fp") >= MEMORY_SIZE_IN_BYTES ||//GPR[$fp] < MAX_STACK_HEIGHT,
             PC < 0 ||//0 ≤ PC,
             PC > MEMORY_SIZE_IN_BYTES || //PC < MEMORY_SIZE_IN_BYTES
             getRegister("$0") != 0// GPR[0] = 0
