@@ -65,7 +65,6 @@ int main(int argc , char **argv) {
     for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
         if(isTracing) {
             printTrace(bh, memory.instrs[i], memory.words);
-			PC = PC + 4;
 		}
 
         //fetch and execute
@@ -91,6 +90,8 @@ int main(int argc , char **argv) {
                 printf("error");
                 break;
         }
+
+		PC = PC + 4;
     }
 	
     bof_close(bf);
