@@ -46,6 +46,7 @@ extern void SRL(bin_instr_t instruction);
     //JR 0 s 0 0 0 8 Jump Register: PC ← GPR[s]
 extern void JR(bin_instr_t instruction);
     //SYSCALL 0 - - - - 12 System Call: (see Table 6)
+extern void SYSCALL(bin_instr_t instruction);
 
 //endregion
 //region IMMEDIATE FORMAT INSTRUCTION:
