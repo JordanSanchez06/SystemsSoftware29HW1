@@ -19,6 +19,7 @@ address_type PC;
 void printTrace(BOFHeader bh,  bin_instr_t instruction);
 void doRegisterInstruction(bin_instr_t instruction);
 int doEnforceInvariants();
+void doSyscallInstruction(bin_instr_t instruction);
 
 int main(int argc , char **argv){
     if(strcmp(argv[1],"-p") == 0) {//for -p option
@@ -91,6 +92,7 @@ int main(int argc , char **argv){
                 break;
             case syscall_instr_type:
                 printf("syscall instruction");
+                doSyscallInstruction(memory.instrs[i]);
                 break;
             case immed_instr_type:
                 printf("immediate instructions");
@@ -104,6 +106,7 @@ int main(int argc , char **argv){
                 printf("error");
                 break;
         }
+    }
 
         PC += 4;
     }
@@ -178,6 +181,30 @@ void doRegisterInstruction(bin_instr_t instruction){
 	    default:
 	    	bail_with_error("Unkown register instruction", instruction);
 			break;
+    }
+}
+
+//figures out what syscall instruction to do
+void doSyscallInstruction(bin_instr_t instruction){
+    switch((int) instruction.syscall.code){
+        case exit_sc:
+            exit(0);
+            break;
+        case print_str_sc:
+            printf("%s", &memory.bytes[REGISTERS[instruction.syscall.code]]);
+            break;
+        case print_char_sc:
+            printf("%c", REGISTERS[instruction.syscall.code]);
+            break;
+        case read_char_sc:
+            REGISTERS[instruction.syscall.code] = getchar();
+            break;
+        case start_tracing_sc:
+            //still do
+            break;
+        case stop_tracing_sc:
+            //still do
+            break;
     }
 }
 
