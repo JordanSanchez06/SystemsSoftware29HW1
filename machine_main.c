@@ -196,10 +196,10 @@ void doSyscallInstruction(bin_instr_t instruction){
             REGISTERS[instruction.syscall.code] = getchar();
             break;
         case start_tracing_sc:
-            //still do
+            isTracing = 1;
             break;
         case stop_tracing_sc:
-            //still do
+            isTracing = 0;
             break;
     }
 }
