@@ -10,12 +10,6 @@
 #define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
 #define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
 
-static union mem_u {
-    byte_type bytes[MEMORY_SIZE_IN_BYTES];
-    word_type words[MEMORY_SIZE_IN_WORDS];
-    bin_instr_t instrs[MEMORY_SIZE_IN_WORDS];
-} memory; //https://webcourses.ucf.edu/courses/1443631/discussion_topics/7460061
-
 //data for each register //extern so we can use it in machine.c where our ADD, SUB, etc. functions will be.
 int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
@@ -101,7 +95,7 @@ int main(int argc , char **argv){
                 break;
             case immed_instr_type:
                 printf("immediate instructions");
-				doImmediateInstruction(memory.instrs[i], PC);
+				doImmediateInstruction(memory.instrs[PC/4], PC);
                 break;
             case jump_instr_type:
                 printf("jump");
