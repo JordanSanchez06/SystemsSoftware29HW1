@@ -14,6 +14,10 @@
 //data for each register //extern so we can use it in machine.c where our ADD, SUB, etc. functions will be.
 int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
+
+//isTracing as a global variable
+int isTracing;
+
 int HALT;
 address_type PC;
 
