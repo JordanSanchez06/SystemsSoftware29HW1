@@ -60,17 +60,17 @@ extern void BORI(bin_instr_t intrsuction);
     //BORI 13 s t i Bitwise Or immediate: GPR[t] ← GPR[s] ∨ zeroExt(i)
 extern void XORI(bin_instr_t intrsuction);
     //XORI 14 s t i Bitwise Xor immediate: GPR[t] ← GPR[s] xor zeroExt(i)
-extern void BEQ(bin_instr_t intrsuction, address_type PC);
+extern void BEQ(bin_instr_t intrsuction);
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
-extern void BGEZ(bin_instr_t intrsuction, address_type PC);
+extern void BGEZ(bin_instr_t intrsuction);
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
-extern void BGTZ(bin_instr_t intrsuction, address_type PC);
+extern void BGTZ(bin_instr_t intrsuction);
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
-extern void BLEZ(bin_instr_t intrsuction, address_type PC);
+extern void BLEZ(bin_instr_t intrsuction);
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
-extern void BLTZ(bin_instr_t intrsuction, address_type PC);
+extern void BLTZ(bin_instr_t intrsuction);
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
-extern void BNE(bin_instr_t intrsuction, address_type PC);
+extern void BNE(bin_instr_t intrsuction);
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
 extern void LBU(bin_instr_t intrsuction);
     //LBU 36 b t o Load Byte Unsigned:

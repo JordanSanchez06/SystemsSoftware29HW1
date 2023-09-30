@@ -12,7 +12,7 @@
 //isTracing as a global variable
 int isTracing;
 
-static union mem_u {
+union mem_u {
     byte_type bytes[MEMORY_SIZE_IN_BYTES];
     word_type words[MEMORY_SIZE_IN_WORDS];
     bin_instr_t instrs[MEMORY_SIZE_IN_WORDS];

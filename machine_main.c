@@ -38,8 +38,13 @@ int main(int argc , char **argv) {
         int address = bh.data_start_address;
         int wordCount = bh.data_length / BYTES_PER_WORD;
         for (int i = 0; i < (wordCount); i++) {
-            printf("\t    %d: %d", address, bof_read_word(bf)); //spacing to match test case
-            address += 4;
+            word_type curWord = bof_read_word(bf);
+            if(curWord != 0) {
+                printf("\t    %d: %d", address, curWord); //spacing to match test case
+                address += 4;
+            }
+            if(i % 4 == 0 && i > 0)
+                printf("\n");
         }
         printf("\t %d: %d ...\n", address, 0);
         printf("\n");
@@ -67,7 +72,7 @@ int main(int argc , char **argv) {
     }
 
     //collect data
-    for(int i = bh.data_start_address; i < ((bh.data_length / BYTES_PER_WORD) + bh.data_start_address); i++ ) {
+    for(int i = bh.data_start_address; i < (bh.data_length + bh.data_start_address); i+=4) {
         memory.words[i] = bof_read_word(bf); //spacing to match test case
     }
 
@@ -87,30 +92,33 @@ int main(int argc , char **argv) {
         }
         switch (curInstrType) {
             case reg_instr_type:
-                printf("register instruction");
+                //printf("register instruction");
                 doRegisterInstruction(curInstr);
                 break;
             case syscall_instr_type:
-                printf("syscall instruction");
+                //printf("syscall instruction");
                 doSyscallInstruction(curInstr);
                 break;
             case immed_instr_type:
-                printf("immediate instructions");
+                //printf("immediate instructions");
                 doImmediateInstruction(curInstr, PC);
                 break;
             case jump_instr_type:
-                printf("jump");
+                //printf("jump");
                 doJumpInstruction(curInstr);
                 break;
             case error_instr_type:
-                printf("error");
+                //printf("error");
                 break;
         }
     }
     bof_close(bf);
 }
  void printTrace(BOFHeader bh,  bin_instr_t instruction){
-     printf("      PC: %d\n", PC);
+     printf("      PC: %d", PC);
+     if(HI || LO)
+        printf("        HI: %d           LO: %d",HI, LO);
+     printf("\n");
      printf("GPR[$0 ]: %d   	GPR[$at]: %d   	GPR[$v0]: %d   	GPR[$v1]: %d   	GPR[$a0]: %d   	GPR[$a1]: %d\n", REGISTERS[0], REGISTERS[1], REGISTERS[2], REGISTERS[3], REGISTERS[4], REGISTERS[5]);
      printf("GPR[$a2]: %d   	GPR[$a3]: %d   	GPR[$t0]: %d   	GPR[$t1]: %d   	GPR[$t2]: %d   	GPR[$t3]: %d\n", REGISTERS[6], REGISTERS[7], REGISTERS[8], REGISTERS[9], REGISTERS[10], REGISTERS[11]);
      printf("GPR[$t4]: %d   	GPR[$t5]: %d   	GPR[$t6]: %d   	GPR[$t7]: %d   	GPR[$s0]: %d   	GPR[$s1]: %d\n", REGISTERS[12], REGISTERS[13], REGISTERS[14], REGISTERS[15], REGISTERS[16], REGISTERS[17]);
@@ -118,14 +126,34 @@ int main(int argc , char **argv) {
      printf("GPR[$t8]: %d   	GPR[$t9]: %d   	GPR[$k0]: %d   	GPR[$k1]: %d   	GPR[$gp]: %d	GPR[$sp]: %d\n", REGISTERS[25], REGISTERS[25], REGISTERS[26], REGISTERS[27], REGISTERS[28], REGISTERS[29]);
      printf("GPR[$fp]: %d	GPR[$ra]: %d\n", REGISTERS[30], REGISTERS[31]);
      int address = bh.data_start_address;
-     int wordCount = bh.data_length / BYTES_PER_WORD + bh.data_start_address;
-     for(int i = bh.data_start_address; i < (wordCount); i++ ) {
-         printf("     %d: %d", address , memory.words[i]); //spacing to match test case
-         address += 4;
+     int i;
+     int isZero = 0;
+     for(i = bh.data_start_address; i < (bh.stack_bottom_addr); i+=4 ) {
+         if(memory.words[i] != 0) {
+             isZero = 0;
+             printf("    %d: %d", i, memory.words[i]); //spacing to match test case
+         }
+         else if(!isZero){
+             isZero = 1;
+             printf("    %d: %d ...", i, memory.words[i]);
+         }
+
+         if(i % 16 == 0 && i > bh.data_start_address && memory.words[i] != 0)
+             printf("\n");
      }
-     printf("     %d: %d ...", address,  0); //TODO is this zero everytime
      printf("\n");
-     printf("     %d: 0	...\n", bh.stack_bottom_addr); //TODO is that zero everytime? What do ... signify?
+
+
+     for(int i = getRegister("$sp"); i <= getRegister("$fp"); i+=4 ) {
+             printf("    %d: %d", i, memory.words[i]); //spacing to match test case
+             if(memory.words[i] == 0)
+                 printf(" ...");
+         if(i % 4 == 0 && i > 0 && memory.words[i] != 0)
+             printf("\n");
+     }
+     printf("\n");
+
+     //printf("     %d: 0 ...\n", bh.stack_bottom_addr); //TODO is that zero everytime? What do ... signify?
      printf("==> addr:    %d %s\n", PC, instruction_assembly_form(instruction));
  }
 
@@ -189,10 +217,10 @@ void doSyscallInstruction(bin_instr_t instruction){
             printf("%s", &memory.bytes[REGISTERS[instruction.syscall.code]]);
             break;
         case print_char_sc:
-            printf("%c", REGISTERS[instruction.syscall.code]);
+            setRegister("$v0",fputc(getRegister("$a0"), stdout));
             break;
         case read_char_sc:
-            REGISTERS[instruction.syscall.code] = getchar();
+            setRegister("$v0", getc(stdin));
             break;
         case start_tracing_sc:
             isTracing = 1;
@@ -218,22 +246,22 @@ void doImmediateInstruction(bin_instr_t instruction, address_type PC) {
 	        XORI(instruction);
 	        break;
         case BEQ_O:
-	        BEQ(instruction, PC);
+	        BEQ(instruction);
 	        break;
         case BGEZ_O:
-	        BGEZ(instruction, PC);
+	        BGEZ(instruction);
 	        break;
         case BGTZ_O:
-	        BGTZ(instruction, PC);
+	        BGTZ(instruction);
 	        break;
         case BLEZ_O:
-	        BLEZ(instruction, PC);
+	        BLEZ(instruction);
 	        break;
         case BLTZ_O:
-	        BLTZ(instruction, PC);
+	        BLTZ(instruction);
 	        break;
         case BNE_O:
-        	BNE(instruction, PC);
+        	BNE(instruction);
 	        break;
         case LBU_O:
         	LBU(instruction);

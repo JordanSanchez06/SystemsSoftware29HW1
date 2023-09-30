@@ -8,6 +8,7 @@
 #include "machine_main.h"
 
 extern int REGISTERS[NUM_REGISTERS];
+extern union mem_u;
 address_type HI;
 address_type LO;
 
@@ -140,42 +141,42 @@ void XORI(bin_instr_t instruction) {
     REGISTERS[instruction.immed.rt] = REGISTERS[instruction.immed.rs] ^ machine_types_zeroExt(instruction.immed.immed);
 }
 
-void BEQ(bin_instr_t instruction, address_type PC) {
+void BEQ(bin_instr_t instruction) {
     //BEQ 4 s t o Branch on Equal: if GPR[s] = GPR[t] then PC ← PC + formOffset(o)
     if(REGISTERS[instruction.immed.rs] == REGISTERS[instruction.immed.rt]) {
         PC = PC + machine_types_formOffset(instruction.immed.immed);
     }
 }
 
-void BGEZ(bin_instr_t instruction, address_type PC) {
+void BGEZ(bin_instr_t instruction) {
     //BGEZ 1 s 1 o Branch ≥ 0: if GPR[s] ≥ 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] >= REGISTERS[0]) {
 		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BGTZ(bin_instr_t instruction, address_type PC) {
+void BGTZ(bin_instr_t instruction) {
     //BGTZ 7 s 0 o Branch > 0: if GPR[s] > 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] > REGISTERS[0]) {
 		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BLEZ(bin_instr_t instruction, address_type PC) {
+void BLEZ(bin_instr_t instruction) {
     //BLEZ 6 s 0 o Branch ≤ 0: if GPR[s] ≤ 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] <= REGISTERS[0]) {
 		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BLTZ(bin_instr_t instruction, address_type PC) {
+void BLTZ(bin_instr_t instruction) {
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] < REGISTERS[0]) {
 		PC = PC + machine_types_formOffset(instruction.immed.immed);
 	}
 }
 
-void BNE(bin_instr_t instruction, address_type PC) {
+void BNE(bin_instr_t instruction) {
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
 	if(REGISTERS[instruction.immed.rs] != REGISTERS[instruction.immed.rt]) {
 		PC = PC + machine_types_formOffset(instruction.immed.immed);
