@@ -186,7 +186,7 @@ void BNE(bin_instr_t instruction) {
 void LBU(bin_instr_t instruction) {
     //LBU 36 b t o Load Byte Unsigned:
     //GPR[t] ← zeroExt(memory[GPR[b] + formOffset(o)])
-	REGISTERS[instruction.immed.rt] = machine_types_zeroExt(memory.bytes[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)]);
+	REGISTERS[instruction.immed.rt] = machine_types_zeroExt(memory.words[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)]);
 }
 
 void LW(bin_instr_t instruction) {

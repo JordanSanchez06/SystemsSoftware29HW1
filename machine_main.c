@@ -123,37 +123,49 @@ int main(int argc , char **argv) {
      printf("GPR[$a2]: %d   	GPR[$a3]: %d   	GPR[$t0]: %d   	GPR[$t1]: %d   	GPR[$t2]: %d   	GPR[$t3]: %d\n", REGISTERS[6], REGISTERS[7], REGISTERS[8], REGISTERS[9], REGISTERS[10], REGISTERS[11]);
      printf("GPR[$t4]: %d   	GPR[$t5]: %d   	GPR[$t6]: %d   	GPR[$t7]: %d   	GPR[$s0]: %d   	GPR[$s1]: %d\n", REGISTERS[12], REGISTERS[13], REGISTERS[14], REGISTERS[15], REGISTERS[16], REGISTERS[17]);
      printf("GPR[$s2]: %d   	GPR[$s3]: %d   	GPR[$s4]: %d   	GPR[$s5]: %d   	GPR[$s6]: %d   	GPR[$s7]: %d\n", REGISTERS[18], REGISTERS[19], REGISTERS[20], REGISTERS[21], REGISTERS[22], REGISTERS[23]);
-     printf("GPR[$t8]: %d   	GPR[$t9]: %d   	GPR[$k0]: %d   	GPR[$k1]: %d   	GPR[$gp]: %d	GPR[$sp]: %d\n", REGISTERS[25], REGISTERS[25], REGISTERS[26], REGISTERS[27], REGISTERS[28], REGISTERS[29]);
+     printf("GPR[$t8]: %d   	GPR[$t9]: %d   	GPR[$k0]: %d   	GPR[$k1]: %d   	GPR[$gp]: %d	GPR[$sp]: %d\n", REGISTERS[24], REGISTERS[25], REGISTERS[26], REGISTERS[27], REGISTERS[28], REGISTERS[29]);
      printf("GPR[$fp]: %d	GPR[$ra]: %d\n", REGISTERS[30], REGISTERS[31]);
-     int address = bh.data_start_address;
      int i;
      int isZero = 0;
-     for(i = bh.data_start_address; i < (bh.stack_bottom_addr); i+=4 ) {
+     int printCount = 0;
+     for(i = bh.data_start_address; i < (getRegister("$sp")); i+=4 ) {
+         if(isZero && memory.words[i] == 0)
+             break;
          if(memory.words[i] != 0) {
              isZero = 0;
              printf("    %d: %d", i, memory.words[i]); //spacing to match test case
+             printCount++;
          }
          else if(!isZero){
              isZero = 1;
              printf("    %d: %d ...", i, memory.words[i]);
+             printCount++;
          }
 
-         if(i % 16 == 0 && i > bh.data_start_address && memory.words[i] != 0)
+         if(printCount % 5 == 0 && printCount > 0)
              printf("\n");
+
      }
      printf("\n");
 
-
+     isZero = 0;
+     printCount = 0;
      for(int i = getRegister("$sp"); i <= getRegister("$fp"); i+=4 ) {
+         if(memory.words[i] != 0) {
+             isZero = 0;
              printf("    %d: %d", i, memory.words[i]); //spacing to match test case
-             if(memory.words[i] == 0)
-                 printf(" ...");
-         if(i % 4 == 0 && i > 0 && memory.words[i] != 0)
+             printCount++;
+         }
+         else if(!isZero){
+             isZero = 1;
+             printf("    %d: %d   ...", i, memory.words[i]);
+             printCount++;
+         }
+         if(printCount % 5 == 0 && printCount > 0)
              printf("\n");
      }
      printf("\n");
 
-     //printf("     %d: 0 ...\n", bh.stack_bottom_addr); //TODO is that zero everytime? What do ... signify?
      printf("==> addr:    %d %s\n", PC, instruction_assembly_form(instruction));
  }
 
@@ -171,6 +183,7 @@ void doRegisterInstruction(bin_instr_t instruction){
             break;
         case DIV_F:
             DIV(instruction);
+            break;
         case MFHI_F:
             MFHI(instruction);
             break;
