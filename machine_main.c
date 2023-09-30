@@ -7,10 +7,6 @@
 #include "machine.h"
 #include "machine_main.h"
 
-// a size for the memory (2^16 bytes = 64K)
-#define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
-#define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
-
 //data for each register //extern so we can use it in machine.c where our ADD, SUB, etc. functions will be.
 int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
