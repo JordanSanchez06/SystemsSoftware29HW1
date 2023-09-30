@@ -212,7 +212,6 @@ void doRegisterInstruction(bin_instr_t instruction){
             JR(instruction);
             break;
         case SYSCALL_F:
-            SYSCALL(instruction);
             break;
 	    default:
 	    	bail_with_error("Unkown register instruction", instruction);

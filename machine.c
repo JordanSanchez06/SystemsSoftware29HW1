@@ -8,7 +8,6 @@
 #include "machine_main.h"
 
 extern int REGISTERS[NUM_REGISTERS];
-extern union mem_u;
 address_type HI;
 address_type LO;
 
@@ -95,6 +94,7 @@ void JR(bin_instr_t instruction){
     PC = REGISTERS[instruction.reg.rs];
 }
     //SYSCALL 0 - - - - 12 System Call: (see Table 6)
+    /*
 void SYSCALL (bin_instr_t instruction) {
     switch((int) instruction.syscall.code){
         case exit_sc:
@@ -116,7 +116,7 @@ void SYSCALL (bin_instr_t instruction) {
             isTracing = 0;
             break;
     }
-}
+}*/
 //endregion
 //region IMMEDIATE FORMAT INSTRUCTION:
 
