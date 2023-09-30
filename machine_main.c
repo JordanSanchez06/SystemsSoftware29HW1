@@ -17,6 +17,9 @@ int REGISTERS[NUM_REGISTERS];
 int HALT;
 address_type PC;
 
+//isTracing as a global variable
+int isTracing;
+
 void printTrace(BOFHeader bh,  bin_instr_t instruction);
 void doRegisterInstruction(bin_instr_t instruction);
 
