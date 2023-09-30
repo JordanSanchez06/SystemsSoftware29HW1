@@ -89,9 +89,9 @@ extern void SW(bin_instr_t intrsuction);
 //region JUMP TYPE INSTRUCTIONS
 
     //Name op addr (Explanation)
-extern void JMP(address_type a, address_type PC);
+extern void JMP(address_type a);
     //JMP 2 a Jump: PC ← formAddress(PC, a)
-extern void JAL(address_type a, address_type PC);
+extern void JAL(address_type a);
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
 
     //endregion

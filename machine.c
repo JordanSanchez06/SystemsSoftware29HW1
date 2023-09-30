@@ -210,14 +210,14 @@ void SW(bin_instr_t instruction) {
 //region JUMP TYPE INSTRUCTIONS
 
     //Name op addr (Explanation)
-void JMP(address_type a, address_type PC) {
+void JMP(address_type a) {
     //JMP 2 a Jump: PC ← formAddress(PC, a)
 	PC = machine_types_formAddress(PC, a);
 }
 
-void JAL(address_type a, address_type PC) {
+void JAL(address_type a) {
     //JAL 3 a Jump and Link: GPR[$ra] ← PC; PC ← formAddress(PC, a)
-	REGISTERS[a] = PC;
+    setRegister("$ra", PC);
 	PC = machine_types_formAddress(PC, a);
 }
 

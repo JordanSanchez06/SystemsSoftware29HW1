@@ -67,19 +67,19 @@ int main(int argc , char **argv) {
     }
 
     //collect data
-    for (int i =  bh.data_start_address; i < (bh.data_length / BYTES_PER_WORD); i++) {
+    for(int i = bh.data_start_address; i < ((bh.data_length / BYTES_PER_WORD) + bh.data_start_address); i++ ) {
         memory.words[i] = bof_read_word(bf); //spacing to match test case
     }
 
     //fetch execute cycle loop
     while (!HALT) {
-        printf("PC: %d\n\n", PC);
-        if (isTracing)
-            printTrace(bh, memory.instrs[PC / 4]);
+        bin_instr_t curInstr = memory.instrs[PC / 4];
+        int curInstrType = instruction_type(curInstr);
 
-        //fetch and execute
-        int curInstrType = instruction_type(memory.instrs[PC / 4]);
-        printf("%d", curInstrType);
+        if (isTracing)
+            printTrace(bh, curInstr);
+
+        PC += 4;
 
         if (doEnforceInvariants()) {
             fprintf(stderr, "Invariant Violated");
@@ -88,25 +88,24 @@ int main(int argc , char **argv) {
         switch (curInstrType) {
             case reg_instr_type:
                 printf("register instruction");
-                doRegisterInstruction(memory.instrs[PC / 4]);
+                doRegisterInstruction(curInstr);
                 break;
             case syscall_instr_type:
                 printf("syscall instruction");
-                doSyscallInstruction(memory.instrs[PC / 4]);
+                doSyscallInstruction(curInstr);
                 break;
             case immed_instr_type:
                 printf("immediate instructions");
-                doImmediateInstruction(memory.instrs[PC / 4], PC);
+                doImmediateInstruction(curInstr, PC);
                 break;
             case jump_instr_type:
                 printf("jump");
-                doJumpInstruction(memory.instrs[PC / 4], PC / 4, PC);
+                doJumpInstruction(curInstr);
                 break;
             case error_instr_type:
                 printf("error");
                 break;
         }
-        PC += 4;
     }
     bof_close(bf);
 }
@@ -254,13 +253,13 @@ void doImmediateInstruction(bin_instr_t instruction, address_type PC) {
     }
 }
 
-void doJumpInstruction(bin_instr_t instruction, address_type i, address_type PC) {
+void doJumpInstruction(bin_instr_t instruction) {
 	switch((int) instruction.jump.op) {
         case JMP_O:
-			JMP(i, PC);
+			JMP(instruction.jump.addr);
             break;
         case JAL_O:
-			JAL(i, PC);
+			JAL(instruction.jump.addr);
             break;
         default:
             bail_with_error("Unkown jump instruction", instruction);
