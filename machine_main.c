@@ -20,8 +20,8 @@ address_type PC;
 void printTrace(BOFHeader bh,  bin_instr_t instruction);
 void doRegisterInstruction(bin_instr_t instruction);
 
-int main(int argc , char **argv){
-    if(strcmp(argv[1],"-p") == 0) {//for -p option
+int main(int argc , char **argv) {
+    if (strcmp(argv[1], "-p") == 0) {//for -p option
 
         BOFFILE bf = bof_read_open(argv[2]);
         BOFHeader bh = bof_read_header(bf);
@@ -29,7 +29,7 @@ int main(int argc , char **argv){
         //print instructions
         printf("Addr Instruction\n");
         PC = bh.text_start_address;
-        for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
+        for (int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
             printf("\t%d %s\n", PC, instruction_assembly_form(instruction_read(bf)));
             PC = PC + 4;
         }
@@ -37,8 +37,8 @@ int main(int argc , char **argv){
         //print initial data values.
         int address = bh.data_start_address;
         int wordCount = bh.data_length / BYTES_PER_WORD;
-        for(int i = 0; i < (wordCount); i++ ) {
-            printf("\t    %d: %d", address , bof_read_word(bf)); //spacing to match test case
+        for (int i = 0; i < (wordCount); i++) {
+            printf("\t    %d: %d", address, bof_read_word(bf)); //spacing to match test case
             address += 4;
         }
         printf("\t %d: %d ...\n", address, 0);
@@ -62,54 +62,54 @@ int main(int argc , char **argv){
     setRegister("$sp", bh.stack_bottom_addr); //i believe frame and stack pointer share this value but i could be wrong.
 
     //collect instructions
-    for(int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++ ) {
+    for (int i = 0; i < (bh.text_length / BYTES_PER_WORD); i++) {
         memory.instrs[i] = instruction_read(bf);
     }
 
     //collect data
-    for(int i = 0; i < (bh.data_length/BYTES_PER_WORD); i++ ) {
+    for (int i =  bh.data_start_address; i < (bh.data_length / BYTES_PER_WORD); i++) {
         memory.words[i] = bof_read_word(bf); //spacing to match test case
     }
 
     //fetch execute cycle loop
-    while(!HALT) {
-        if(isTracing)
-            printTrace(bh, memory.instrs[PC/4]);
+    while (!HALT) {
+        printf("PC: %d\n\n", PC);
+        if (isTracing)
+            printTrace(bh, memory.instrs[PC / 4]);
 
         //fetch and execute
-        int curInstrType = instruction_type(memory.instrs[PC/4]);
+        int curInstrType = instruction_type(memory.instrs[PC / 4]);
         printf("%d", curInstrType);
 
-        PC += 4;
-        if(doEnforceInvariants()){
+        if (doEnforceInvariants()) {
             fprintf(stderr, "Invariant Violated");
             return 1;
         }
-        switch(curInstrType){
+        switch (curInstrType) {
             case reg_instr_type:
                 printf("register instruction");
-                doRegisterInstruction(memory.instrs[PC/4]);
+                doRegisterInstruction(memory.instrs[PC / 4]);
                 break;
             case syscall_instr_type:
                 printf("syscall instruction");
-                doSyscallInstruction(memory.instrs[PC/4]);
+                doSyscallInstruction(memory.instrs[PC / 4]);
                 break;
             case immed_instr_type:
                 printf("immediate instructions");
-				doImmediateInstruction(memory.instrs[PC/4], PC);
+                doImmediateInstruction(memory.instrs[PC / 4], PC);
                 break;
             case jump_instr_type:
                 printf("jump");
-				doJumpInstruction(memory.instrs[PC/4], PC/4, PC);
+                doJumpInstruction(memory.instrs[PC / 4], PC / 4, PC);
                 break;
             case error_instr_type:
                 printf("error");
                 break;
         }
-
+        PC += 4;
+    }
     bof_close(bf);
 }
-
  void printTrace(BOFHeader bh,  bin_instr_t instruction){
      printf("      PC: %d\n", PC);
      printf("GPR[$0 ]: %d   	GPR[$at]: %d   	GPR[$v0]: %d   	GPR[$v1]: %d   	GPR[$a0]: %d   	GPR[$a1]: %d\n", REGISTERS[0], REGISTERS[1], REGISTERS[2], REGISTERS[3], REGISTERS[4], REGISTERS[5]);
