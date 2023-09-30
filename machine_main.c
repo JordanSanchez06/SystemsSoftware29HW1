@@ -7,6 +7,16 @@
 #include "machine.h"
 #include "machine_main.h"
 
+// a size for the memory (2^16 bytes = 64K)
+#define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
+#define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
+
+static union mem_u {
+    byte_type bytes[MEMORY_SIZE_IN_BYTES];
+    word_type words[MEMORY_SIZE_IN_WORDS];
+    bin_instr_t instrs[MEMORY_SIZE_IN_WORDS];
+} memory; //https://webcourses.ucf.edu/courses/1443631/discussion_topics/7460061
+
 //data for each register //extern so we can use it in machine.c where our ADD, SUB, etc. functions will be.
 int REGISTERS[NUM_REGISTERS];
 //use regname_get(index) for name of register
@@ -320,5 +330,29 @@ int doEnforceInvariants(){
             getRegister("$0") != 0// GPR[0] = 0
     )return 1;
     else return 0;
+}
+
+void LBU(bin_instr_t instruction) {
+    //LBU 36 b t o Load Byte Unsigned:
+    //GPR[t] ← zeroExt(memory[GPR[b] + formOffset(o)])
+    REGISTERS[instruction.immed.rt] = machine_types_zeroExt(memory.words[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)]);
+}
+
+void LW(bin_instr_t instruction) {
+    //LW 35 b t o Load Word (4 bytes):
+    //GPR[t] ← memory[GPR[b] + formOffset(o)]
+    REGISTERS[instruction.immed.rt] = memory.words[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)];
+}
+
+void SB(bin_instr_t instruction) {
+    //SB 40 b t o Store Byte (least significant byte of GPR[t]):
+    //memory[GPR[b] + formOffset(o)] ← GPR[t]
+    memory.bytes[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
+}
+
+void SW(bin_instr_t instruction) {
+    //SW 43 b t o Store Word (4 bytes):
+    //memory[GPR[b] + formOffset(o)] ← GPR[t]
+    memory.words[REGISTERS[instruction.immed.rs] + machine_types_formOffset(instruction.immed.immed)] = REGISTERS[instruction.immed.rt];
 }
 

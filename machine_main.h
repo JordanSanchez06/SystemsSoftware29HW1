@@ -5,15 +5,7 @@
 #include "instruction.h"
 #include "bof.h"
 
-// a size for the memory (2^16 bytes = 64K)
-#define MEMORY_SIZE_IN_BYTES (65536 - BYTES_PER_WORD)
-#define MEMORY_SIZE_IN_WORDS (MEMORY_SIZE_IN_BYTES / BYTES_PER_WORD)
 
-union mem_u {
-    byte_type bytes[MEMORY_SIZE_IN_BYTES];
-    word_type words[MEMORY_SIZE_IN_WORDS];
-    bin_instr_t instrs[MEMORY_SIZE_IN_WORDS];
-} memory; //https://webcourses.ucf.edu/courses/1443631/discussion_topics/7460061
 
 //data for each register //extern so we can use it in machine.c where our ADD, SUB, etc. functions will be.
 extern int REGISTERS[NUM_REGISTERS];
@@ -33,3 +25,7 @@ extern void doJumpInstruction(bin_instr_t instruction);
 extern void doSyscallInstruction(bin_instr_t instruction);
 extern int doEnforceInvariants();
 extern int getRegister(char * name);
+extern void LBU(bin_instr_t intrsuction);
+extern void LW(bin_instr_t intrsuction);
+extern void SB(bin_instr_t intrsuction);
+extern void SW(bin_instr_t intrsuction);

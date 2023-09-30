@@ -72,18 +72,6 @@ extern void BLTZ(bin_instr_t intrsuction);
     //BLTZ 8 s 0 o Branch < 0: if GPR[s] < 0 then PC ← PC + formOffset(o)
 extern void BNE(bin_instr_t intrsuction);
     //BNE 5 s t o Branch Not Equal: if GPR[s] ̸ = GPR[t] then PC ← PC + formOffset(o)
-extern void LBU(bin_instr_t intrsuction);
-    //LBU 36 b t o Load Byte Unsigned:
-    //GPR[t] ← zeroExt(memory[GPR[b] + formOffset(o)])
-extern void LW(bin_instr_t intrsuction);
-    //LW 35 b t o Load Word (4 bytes):
-    //GPR[t] ← memory[GPR[b] + formOffset(o)]
-extern void SB(bin_instr_t intrsuction);
-    //SB 40 b t o Store Byte (least significant byte of GPR[t]):
-    //memory[GPR[b] + formOffset(o)] ← GPR[t]
-extern void SW(bin_instr_t intrsuction);
-    //SW 43 b t o Store Word (4 bytes):
-    //memory[GPR[b] + formOffset(o)] ← GPR[t]
 
 //endregion
 //region JUMP TYPE INSTRUCTIONS
